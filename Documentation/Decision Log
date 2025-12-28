@@ -1,0 +1,530 @@
+# Architectural Decision Log
+
+## Document Information
+- **Version**: 1.0
+- **Last Updated**: December 2025
+- **Status**: Active
+- **Owner**: Solution Architect
+
+## Overview
+
+This document tracks significant architectural and design decisions made during the Water Accounting Solution project. Each decision is recorded with context, alternatives considered, rationale, and implications.
+
+## How to Use This Log
+
+### When to Record a Decision
+Record decisions that:
+- Impact the overall solution architecture
+- Affect multiple components or systems
+- Have long-term implications
+- Involve significant trade-offs
+- Could be questioned or reversed later
+- Set precedents for future decisions
+
+### Decision Template
+Each decision should include:
+1. **Decision Number**: Unique identifier (ADR-XXX)
+2. **Title**: Brief description
+3. **Status**: Proposed / Accepted / Superseded
+4. **Context**: Why this decision is needed
+5. **Decision**: What we decided
+6. **Alternatives Considered**: Other options evaluated
+7. **Rationale**: Why this option was chosen
+8. **Consequences**: Implications and trade-offs
+9. **Date**: When decided
+10. **Participants**: Who was involved
+
+---
+
+## Active Decisions
+
+### ADR-001: Azure as Primary Platform
+
+**Status**: ✅ Accepted  
+**Date**: December 2025  
+**Decision Maker**: Enterprise Architecture Team  
+**Participants**: Jamie Walshe, Lance Altena, Enterprise Architect, Solution Architect
+
+**Context**:
+Sunwater needs to select a cloud platform for the new Water Accounting solution. The legacy Orion system is on-premise and end-of-life. The solution requires high availability, scalability, and integration capabilities.
+
+**Decision**:
+Microsoft Azure will be the primary cloud platform for the Water Accounting solution.
+
+**Alternatives Considered**:
+1. **AWS (Amazon Web Services)**
+   - Pros: Market leader, extensive services, strong partner ecosystem
+   - Cons: No existing Sunwater investment, learning curve, different tooling
+   
+2. **Google Cloud Platform**
+   - Pros: Strong data analytics, ML capabilities
+   - Cons: Smallest market share, no existing Sunwater presence, limited partner ecosystem in Queensland
+   
+3. **On-Premise Infrastructure**
+   - Pros: Full control, no cloud costs
+   - Cons: High capex, maintenance burden, scalability limitations, longer time to market
+
+**Rationale**:
+- Existing Sunwater investment in Azure
+- Comprehensive PaaS services (App Services, Functions, API Management)
+- Strong integration capabilities (Logic Apps, Service Bus, Event Grid)
+- Familiar to existing ICT team
+- Extensive partner ecosystem in Brisbane/Queensland
+- Meets security and compliance requirements
+- Lower total cost of ownership vs on-premise
+
+**Consequences**:
+- **Positive**:
+  - Leverage existing Azure skills and infrastructure
+  - Faster development with PaaS services
+  - Built-in scalability and resilience
+  - Simplified integration with existing Azure-hosted systems
+  
+- **Negative**:
+  - Vendor lock-in (mitigated by using standard APIs where possible)
+  - Ongoing subscription costs (offset by reduced infrastructure costs)
+  - Requires Azure expertise in team
+
+- **Neutral**:
+  - Team needs training on specific Azure services
+  - Governance required for cost management
+
+**Related Decisions**: ADR-002, ADR-003
+
+---
+
+### ADR-002: Separate Water Accounting System (Not Salesforce Extension)
+
+**Status**: ✅ Accepted  
+**Date**: December 2025  
+**Decision Maker**: Solution Architect, Enterprise Architect  
+**Participants**: Jamie Walshe, Lance Altena, CASPR Project Team
+
+**Context**:
+The original CASPR plan proposed extending Salesforce to handle Water Accounting functionality. After detailed analysis, significant concerns emerged about fit-for-purpose, technical debt, and long-term maintainability.
+
+**Decision**:
+Water Accounting will be built as a separate, specialized system on Azure, integrating with Salesforce (CRM) and Gentrack (Billing) via APIs rather than being built within Salesforce.
+
+**Alternatives Considered**:
+1. **Custom Development in Salesforce**
+   - Pros: Single platform, unified UI, vendor support
+   - Cons: Poor fit-for-purpose (CRM vs ledger accounting), high customization complexity, significant technical debt, difficult to maintain, scalability concerns
+   
+2. **Extend Orion**
+   - Pros: Existing functionality, known by users
+   - Cons: End-of-life, no vendor support, technology debt, cannot integrate with modern systems
+   
+3. **Commercial Water Accounting Package**
+   - Pros: Purpose-built, vendor support
+   - Cons: No suitable products identified in market research (KPMG study), would still require significant customization
+
+**Rationale**:
+- **Fundamental Mismatch**: Water Accounting is a ledger/accounting problem (product supply and distribution), not a CRM problem
+- **Technical Debt**: Heavy Salesforce customization would create long-term technical debt and high maintenance costs
+- **Fit-for-Purpose**: Ledger-based platforms (like Azure SQL + custom services) are better suited to double-entry accounting, complex calculations, and real-time balancing
+- **Modularity**: Separation of concerns allows independent evolution of CRM, Billing, and Water Accounting
+- **Flexibility**: Easier to replace or upgrade individual components in future
+- **Scalability**: Dedicated platform can be optimized for water accounting workloads
+
+**Consequences**:
+- **Positive**:
+  - Fit-for-purpose solution for complex water accounting
+  - Reduced technical debt
+  - Better performance for calculation-intensive operations
+  - Modular architecture supports future changes
+  - Easier to test and maintain
+  
+- **Negative**:
+  - Additional platform to manage and support
+  - Integration complexity (three platforms: Salesforce, Gentrack, Water Accounting)
+  - Potential for data inconsistency if integration fails
+  
+- **Neutral**:
+  - Requires strong API design and governance
+  - Need clear data ownership and master data management
+
+**Related Decisions**: ADR-001, ADR-004, ADR-005
+
+---
+
+### ADR-003: Ledger-Based Data Model (Double-Entry Accounting)
+
+**Status**: ✅ Accepted  
+**Date**: December 2025  
+**Decision Maker**: Data Architect, Solution Architect  
+**Participants**: Data Architecture Team, Finance Team
+
+**Context**:
+Need to determine the fundamental data model for water accounting. The model must support complex allocation rules, accurate balancing, complete audit trails, and regulatory compliance.
+
+**Decision**:
+Implement a ledger-based data model using double-entry accounting principles, where every transaction has equal and opposite entries, ensuring the system always balances.
+
+**Alternatives Considered**:
+1. **Simple Balance Tracking** (Current + Debits - Credits = New Balance)
+   - Pros: Simple, easy to understand
+   - Cons: No audit trail, difficult to reconcile, prone to errors, can't reconstruct history
+   
+2. **Event Sourcing** (Store all events, derive current state)
+   - Pros: Complete history, easy to replay
+   - Cons: Complex queries, performance concerns, steep learning curve, limited tooling
+   
+3. **Document-Based** (Store snapshots of account state)
+   - Pros: Flexible schema, good for read-heavy workloads
+   - Cons: Difficult to ensure consistency, complex balancing logic, poor for financial data
+
+**Rationale**:
+- **Accuracy**: Double-entry ensures mathematical accuracy (debits always equal credits)
+- **Audit Trail**: Complete, immutable history of all transactions
+- **Reconciliation**: Built-in reconciliation capabilities
+- **Compliance**: Meets regulatory requirements for financial-grade record keeping
+- **Industry Standard**: Proven approach for accounting systems over centuries
+- **Debugging**: Easy to identify where balances went wrong
+- **Temporal Queries**: Can reconstruct balances at any point in time
+
+**Consequences**:
+- **Positive**:
+  - High data integrity
+  - Complete audit trail
+  - Easy reconciliation
+  - Regulatory compliance
+  - Industry-standard approach
+  
+- **Negative**:
+  - More complex than simple balance tracking
+  - Requires understanding of accounting principles
+  - More database storage (every transaction is two entries)
+  
+- **Neutral**:
+  - Team needs training on ledger accounting concepts
+  - Clear posting rules must be defined
+
+**Related Decisions**: ADR-002, ADR-006
+
+---
+
+### ADR-004: API-First Integration Pattern
+
+**Status**: ✅ Accepted  
+**Date**: December 2025  
+**Decision Maker**: Integration Architect, Solution Architect  
+**Participants**: Integration Team, Development Team
+
+**Context**:
+Multiple systems need to exchange data (Salesforce, Gentrack, Water Accounting, SAP, PI System). Need to determine integration approach that supports loose coupling, maintainability, and future flexibility.
+
+**Decision**:
+All integrations will use RESTful APIs as the primary integration mechanism, with event-driven patterns for asynchronous communication.
+
+**Alternatives Considered**:
+1. **Direct Database Access**
+   - Pros: Fast, simple for reads
+   - Cons: Tight coupling, no business logic enforcement, security risks, difficult to change
+   
+2. **File-Based Integration** (CSV/XML files)
+   - Pros: Simple, decoupled
+   - Cons: Not real-time, error handling difficult, batch-oriented, high latency
+   
+3. **Enterprise Service Bus (ESB)**
+   - Pros: Centralized integration, transformation capabilities
+   - Cons: Single point of failure, complexity, vendor lock-in, high cost
+   
+4. **Message Queue Only** (no APIs)
+   - Pros: Asynchronous, scalable
+   - Cons: Difficult for request/response patterns, complex error handling, eventual consistency
+
+**Rationale**:
+- **Loose Coupling**: APIs decouple systems, allowing independent evolution
+- **Standard Interface**: RESTful APIs are industry standard, well-understood
+- **Flexibility**: Can change implementation without affecting consumers
+- **Security**: Clear authentication/authorization at API boundary
+- **Versioning**: API versioning supports backward compatibility
+- **Testability**: APIs can be mocked, stubbed for testing
+- **Governance**: API gateway provides centralized control, monitoring
+- **Hybrid Approach**: Combine synchronous APIs with asynchronous events as needed
+
+**Consequences**:
+- **Positive**:
+  - Systems can evolve independently
+  - Clear contracts between systems
+  - Standard tooling and practices
+  - Easier to test and troubleshoot
+  - API gateway provides monitoring, throttling, security
+  
+- **Negative**:
+  - Network latency for API calls
+  - Requires robust error handling
+  - API design requires upfront effort
+  - Need API management infrastructure
+  
+- **Neutral**:
+  - Requires API design standards and governance
+  - Team needs API development skills
+  - Documentation is critical
+
+**Related Decisions**: ADR-001, ADR-002, ADR-007
+
+---
+
+### ADR-005: Azure SQL Database for Primary Data Store
+
+**Status**: ✅ Accepted  
+**Date**: December 2025  
+**Decision Maker**: Data Architect, Technical Lead  
+**Participants**: Database Team, Development Team
+
+**Context**:
+Need to select a database technology for storing water accounting ledgers, transactions, and master data. Must support ACID transactions, complex queries, and high data integrity.
+
+**Decision**:
+Use Azure SQL Database as the primary data store for water accounting data.
+
+**Alternatives Considered**:
+1. **Azure Cosmos DB**
+   - Pros: Globally distributed, high throughput, flexible schema
+   - Cons: Eventually consistent (by default), higher cost, limited transaction support across partitions, learning curve
+   
+2. **PostgreSQL**
+   - Pros: Open source, rich features, no licensing costs
+   - Cons: Less integrated with Azure services, team less familiar, limited Microsoft support
+   
+3. **SQL Server on VMs**
+   - Pros: Full control, familiar to team
+   - Cons: Higher management overhead, manual scaling, patching burden
+
+**Rationale**:
+- **ACID Compliance**: Critical for financial-grade ledger accuracy
+- **Relational Model**: Perfect fit for ledger structure and master data
+- **Transaction Support**: Strong multi-table transaction support
+- **Familiar Technology**: Team has SQL Server experience
+- **Integration**: Excellent integration with Azure services
+- **Tooling**: Rich ecosystem of tools (SSMS, Azure Data Studio)
+- **Performance**: Good performance for OLTP workloads
+- **Backup/Recovery**: Built-in backup, point-in-time restore
+- **Security**: Comprehensive security features (TDE, Always Encrypted, row-level security)
+
+**Consequences**:
+- **Positive**:
+  - Strong data integrity guarantees
+  - Familiar to development team
+  - Rich querying capabilities
+  - Excellent tooling
+  - Built-in security features
+  
+- **Negative**:
+  - Requires schema design upfront
+  - Scaling requires careful planning
+  - Cost can be high for large databases
+  
+- **Neutral**:
+  - Use Cosmos DB for specific use cases (e.g., high-throughput lookups) if needed
+  - Consider read replicas for reporting workloads
+
+**Related Decisions**: ADR-001, ADR-003
+
+---
+
+### ADR-006: Event-Driven Architecture for Non-Critical Integrations
+
+**Status**: ✅ Accepted  
+**Date**: December 2025  
+**Decision Maker**: Solution Architect  
+**Participants**: Integration Team, Development Team
+
+**Context**:
+Some integrations don't require immediate synchronous responses (e.g., meter reads, daily calculations, reporting updates). Need to determine pattern for asynchronous communication.
+
+**Decision**:
+Use event-driven architecture (Azure Service Bus, Event Grid) for asynchronous, non-critical integrations.
+
+**Alternatives Considered**:
+1. **All Synchronous APIs**
+   - Pros: Simple, immediate consistency
+   - Cons: Tight coupling, cascading failures, poor scalability
+   
+2. **Batch Processing Only**
+   - Pros: Simple, proven
+   - Cons: High latency, not suitable for time-sensitive data
+   
+3. **Direct Database Triggers**
+   - Pros: Immediate, no middleware
+   - Cons: Tight coupling, difficult to debug, doesn't scale
+
+**Rationale**:
+- **Resilience**: Asynchronous processing isolates failures
+- **Scalability**: Message queues buffer load spikes
+- **Flexibility**: Consumers can be added/removed without affecting publishers
+- **Performance**: Non-blocking operations improve responsiveness
+- **Reliability**: Messages guaranteed delivery with retry logic
+
+**Consequences**:
+- **Positive**:
+  - Better system resilience
+  - Improved scalability
+  - Loose coupling between systems
+  - Can handle load spikes
+  
+- **Negative**:
+  - Eventual consistency (not immediate)
+  - More complex debugging
+  - Need message schema governance
+  
+- **Neutral**:
+  - Requires message handling patterns
+  - Dead letter queue management needed
+
+**Related Decisions**: ADR-004, ADR-001
+
+---
+
+## Proposed Decisions (Under Review)
+
+### ADR-007: Redis Cache for Performance Optimization
+
+**Status**: 🟡 Proposed  
+**Date**: December 2025  
+**Decision Maker**: Technical Lead (TBD)  
+**Participants**: TBD
+
+**Context**:
+Customer balance inquiries and common lookups could benefit from caching to improve response times and reduce database load.
+
+**Decision**:
+[Pending - need to evaluate Redis vs Cosmos DB vs in-memory caching]
+
+**Alternatives Being Considered**:
+1. Redis Cache
+2. Cosmos DB for hot data
+3. In-memory caching only
+4. No caching (rely on database optimization)
+
+**Next Steps**:
+- Performance testing to determine if caching is needed
+- Evaluate cache hit rates for common queries
+- Assess cost/benefit
+
+---
+
+### ADR-008: Power BI for Reporting and Analytics
+
+**Status**: 🟡 Proposed  
+**Date**: December 2025  
+**Decision Maker**: BI Lead (TBD)  
+**Participants**: TBD
+
+**Context**:
+Need to select a reporting and analytics tool for operational dashboards, regulatory reports, and business intelligence.
+
+**Decision**:
+[Pending - need to evaluate requirements]
+
+**Alternatives Being Considered**:
+1. Power BI (Microsoft)
+2. Custom dashboards (React + D3.js)
+3. Tableau
+4. SSRS (SQL Server Reporting Services)
+
+**Next Steps**:
+- Define reporting requirements
+- Evaluate existing Sunwater BI tools
+- Consider licensing costs
+
+---
+
+## Superseded Decisions
+
+### ADR-999: Example - Extend Salesforce for Water Accounting
+
+**Status**: ❌ Superseded by ADR-002  
+**Date**: June 2024  
+**Superseded**: December 2025
+
+**Original Decision**:
+Water Accounting would be built as custom functionality within Salesforce.
+
+**Why Superseded**:
+Detailed analysis revealed fundamental mismatch between CRM platform capabilities and water accounting requirements. See ADR-002 for replacement decision.
+
+---
+
+## Decision Statistics
+
+**Total Decisions**: 6 accepted, 2 proposed  
+**Last Updated**: December 2025  
+**Average Decision Age**: < 1 month
+
+---
+
+## Review Process
+
+### Decision Review Triggers
+Decisions should be reviewed when:
+- Technology landscape changes significantly
+- Performance issues emerge
+- Regulatory requirements change
+- Major incidents occur
+- Annual architecture review
+
+### Review Schedule
+- **Quarterly**: Review all active decisions for continued relevance
+- **Annually**: Comprehensive architecture review
+- **As-needed**: When new information emerges
+
+---
+
+## Templates
+
+### New Decision Template
+
+```markdown
+### ADR-XXX: [Decision Title]
+
+**Status**: 🟡 Proposed / ✅ Accepted / ❌ Superseded  
+**Date**: [Date]  
+**Decision Maker**: [Name/Role]  
+**Participants**: [Names]
+
+**Context**:
+[Why is this decision needed? What problem are we solving?]
+
+**Decision**:
+[What did we decide?]
+
+**Alternatives Considered**:
+1. **Option 1**
+   - Pros: 
+   - Cons: 
+
+2. **Option 2**
+   - Pros: 
+   - Cons: 
+
+**Rationale**:
+[Why did we choose this option?]
+
+**Consequences**:
+- **Positive**:
+  - 
+
+- **Negative**:
+  - 
+
+- **Neutral**:
+  - 
+
+**Related Decisions**: [ADR numbers]
+```
+
+---
+
+## Version History
+
+| Version | Date | Author | Changes |
+|---------|------|--------|---------|
+| 1.0 | Dec 2025 | Solution Architect | Initial decision log with first 6 decisions |
+
+---
+
+**Document Owner**: Solution Architect  
+**Next Review**: End of Month 1
