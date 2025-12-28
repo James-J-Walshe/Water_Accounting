@@ -763,59 +763,605 @@ TOTAL TCO:       $3.3m - $5.8m
 
 ---
 
+### 3.5 Option 5: Azure with Serverless Architecture (Optimized)
+
+**Architecture**:
+```
+┌─────────────────────────────────────────────┐
+│        Azure Serverless Architecture         │
+│  ┌─────────────────────────────────────┐   │
+│  │  Azure Functions (Serverless)        │   │
+│  │  - HTTP Triggers (API endpoints)     │   │
+│  │  - Timer Triggers (batch jobs)       │   │
+│  │  - Event Triggers (real-time)        │   │
+│  │  - Queue Triggers (async)            │   │
+│  └──────────────┬──────────────────────┘   │
+│                 │                            │
+│  ┌──────────────▼──────────────────────┐   │
+│  │  Azure SQL Database                  │   │
+│  │  - Ledger tables                     │   │
+│  │  - Temporal tables (audit)           │   │
+│  └─────────────────────────────────────┘   │
+│                                              │
+│  ┌─────────────────────────────────────┐   │
+│  │  Azure API Management                │   │
+│  │  - Integration gateway               │   │
+│  └─────────────────────────────────────┘   │
+│                                              │
+│  ┌─────────────────────────────────────┐   │
+│  │  Event Grid / Service Bus            │   │
+│  │  - Event-driven messaging            │   │
+│  └─────────────────────────────────────┘   │
+└─────────────────────────────────────────────┘
+```
+
+**Why Serverless Architecture**:
+1. ✅ **Pay-per-execution** - only pay when code runs
+2. ✅ **Auto-scaling** - handles allocation period load spikes
+3. ✅ **Lower cost** - water accounting workload is sporadic
+4. ✅ **Modern pattern** - event-driven, cloud-native
+
+**Workload Analysis**:
+- Allocation calculations: Monthly/quarterly → LOW frequency, HIGH compute
+- Balance queries: Daily → MODERATE frequency
+- Reconciliation: Nightly → LOW frequency
+- Order processing: As-needed → VARIABLE frequency
+
+**Perfect fit for serverless**: Sporadic high-compute workloads
+
+**Capabilities Assessment**:
+
+| Capability | Azure Serverless Rating | Notes |
+|------------|------------------------|-------|
+| Double-Entry Ledger | ⭐⭐⭐⭐⭐ | Same as traditional Azure - full flexibility |
+| Calculation Engine | ⭐⭐⭐⭐⭐ | Functions excellent for compute-intensive tasks |
+| Multi-Balance Types | ⭐⭐⭐⭐⭐ | Same Azure SQL capabilities |
+| Integration | ⭐⭐⭐⭐⭐ | API Management, Event Grid built for this |
+| Reconciliation | ⭐⭐⭐⭐⭐ | Timer triggers perfect for scheduled jobs |
+| Performance | ⭐⭐⭐⭐⭐ | Auto-scales for load, optimized for burst |
+| Cost Efficiency | ⭐⭐⭐⭐⭐ | Pay-per-execution beats always-on for sporadic loads |
+
+**Cost Comparison**:
+- **Traditional (App Service)**: $200/month always-on = $12,000/year
+- **Serverless (Functions)**: ~$50/month execution-based = $3,000/year
+- **Annual Savings**: $9,000/year = **$45,000 over 5 years**
+
+**5-Year TCO**:
+```
+Development:     $1.7m - $2.5m (same as traditional Azure)
+Azure Functions: $15k - $30k (vs $60k-$120k for App Service)
+Azure SQL:       $90k - $120k
+API Management:  $15k - $30k
+Other Services:  $15k - $30k
+Operations:      $0.5m - $0.8m
+─────────────────────────────────
+TOTAL:           $2.1m - $3.3m (10-15% cheaper than traditional)
+```
+
+**Strengths**:
+1. ✅ All benefits of Azure platform (flexibility, ecosystem, SQL Server)
+2. ✅ Lower cost through pay-per-execution model
+3. ✅ Auto-scaling for allocation periods
+4. ✅ Event-driven architecture enables real-time updates
+5. ✅ Modern cloud-native pattern
+6. ✅ No idle resource costs
+7. ✅ Infrastructure-as-code friendly
+
+**Weaknesses**:
+1. ⚠️ Cold start latency (mitigated with premium plan)
+2. ⚠️ Execution time limits (10 min default, can extend)
+3. ⚠️ Requires event-driven thinking (paradigm shift)
+4. ⚠️ More complex debugging than traditional apps
+
+**Risk Assessment**:
+- **Vendor Lock-in**: Medium (Azure Functions specific, but logic portable)
+- **Skills Availability**: High (growing serverless adoption)
+- **Delivery Risk**: Medium (same as traditional Azure)
+- **Long-term Support**: Low (serverless is future of cloud)
+
+**Weighted Score**: **8.4/10** (highest of all options)
+
+**Verdict**: ✅ **STRONGLY RECOMMENDED** - Best balance of capability, cost, and modernity. Represents the optimal evolution of the Azure platform choice.
+
+---
+
+### 3.6 Option 6: SAP IS-U (Utilities Module)
+
+**What It Is**: Enterprise resource planning specifically for utility companies (water, energy, gas)
+
+**Architecture**:
+```
+┌────────────────────────────────────────┐
+│         SAP IS-U Platform              │
+│  ┌──────────────────────────────────┐ │
+│  │  FI-CA (Contract Accounts)       │ │
+│  │  - Double-entry accounting       │ │
+│  │  - Customer accounts             │ │
+│  │  - Contract management           │ │
+│  └──────────────────────────────────┘ │
+│  ┌──────────────────────────────────┐ │
+│  │  Device Management               │ │
+│  │  - Meter readings                │ │
+│  │  - Consumption tracking          │ │
+│  │  - Asset integration             │ │
+│  └──────────────────────────────────┘ │
+│  ┌──────────────────────────────────┐ │
+│  │  Billing Engine                  │ │
+│  │  - Invoice generation            │ │
+│  │  - Payment processing            │ │
+│  │  - Rate schedules                │ │
+│  └──────────────────────────────────┘ │
+│  ┌──────────────────────────────────┐ │
+│  │  Custom ABAP (Water Rules)       │ │
+│  │  - AA/CS/CA calculations         │ │
+│  │  - ROL compliance logic          │ │
+│  │  - Scheme-specific rules         │ │
+│  └──────────────────────────────────┘ │
+└────────────────────────────────────────┘
+```
+
+**Capabilities Assessment**:
+
+| Capability | SAP IS-U Rating | Notes |
+|------------|-----------------|-------|
+| Double-Entry Ledger | ⭐⭐⭐⭐⭐ | FI-CA is industrial-grade accounting |
+| Calculation Engine | ⭐⭐⭐⭐ | ABAP powerful but requires customization |
+| Multi-Balance Types | ⭐⭐⭐⭐ | Can model via custom fields |
+| Integration | ⭐⭐⭐⭐⭐ | SAP already at Sunwater for assets |
+| Reconciliation | ⭐⭐⭐⭐⭐ | Built-in financial reconciliation |
+| Water Sharing Rules | ⭐⭐ | NOT native - requires heavy customization |
+| Utility Focus | ⭐⭐⭐⭐⭐ | Purpose-built for utilities |
+| Agility | ⭐⭐ | SAP is rigid, slow to change |
+| Performance | ⭐⭐⭐⭐ | Enterprise-grade but can be slow |
+
+**Strengths**:
+1. ✅ Purpose-built for utility companies (water, energy, gas)
+2. ✅ Industrial-strength accounting (FI-CA module)
+3. ✅ SAP already deployed at Sunwater for asset management
+4. ✅ Regulatory compliance frameworks built-in
+5. ✅ Proven in water industry globally
+6. ✅ Could potentially consolidate with billing (replace Gentrack)
+7. ✅ Enterprise support and long-term viability
+
+**Weaknesses**:
+1. ❌ **Water sharing rules still need heavy ABAP customization** - SAP IS-U designed for consumption-based billing (meter → usage → invoice), NOT allocation-based entitlements
+2. ❌ **Does not natively understand**:
+   - Water sharing rules (AA, CS, CA)
+   - Allocation entitlements
+   - ROL compliance
+   - Storage-based calculations
+   - Multi-priority structures
+3. ❌ **SAP complexity and rigidity** - difficult to change, high governance overhead, long change cycles
+4. ❌ **ABAP skills scarce** - specialized skillset, expensive resources, contractor dependency
+5. ❌ **Long implementation cycles** - SAP projects notoriously slow (18-24 months+)
+6. ❌ **High TCO** - SAP licensing and operations expensive
+7. ❌ **Could expand project scope** - if replacing Gentrack, significantly larger effort
+
+**Critical Analysis**:
+
+**Question**: Does SAP IS-U reduce custom development for water accounting?
+
+**Answer**: **NO** - SAP IS-U is designed for:
+- Consumption-based billing: meter reads → usage → invoices
+- Device management: meters, assets, maintenance
+- Customer accounts: receivable/payable, payments
+
+SAP IS-U does NOT natively support:
+- Allocation-based entitlements (titles vs consumption)
+- Water sharing rules (AA percentages, CS daily adjustments, CA priority distribution)
+- Storage-based calculations (UV → allocation → customer balance)
+- ROL compliance rules
+
+**Implication**: Would need equivalent custom ABAP development as building on Azure, but constrained within SAP's rigid framework.
+
+**Cost Estimate**:
+```
+SAP IS-U Licensing: $500k - $1m (additional modules)
+ABAP Development:   $2m - $3m (water rules customization)
+SAP Consultants:    included in development
+Operations (5yr):   $0.5m - $1m (SAP support team)
+─────────────────────────────────
+TOTAL TCO:          $2.5m - $4m
+```
+
+**Risk Assessment**:
+- **Vendor Lock-in**: High (SAP ecosystem dependency)
+- **Skills Availability**: Low (ABAP specialists scarce and expensive)
+- **Delivery Risk**: Medium-High (SAP complexity, long timelines)
+- **Long-term Support**: Low (SAP committed to IS-U long-term)
+- **Flexibility Risk**: High (SAP rigid, changes difficult)
+
+**Weighted Score**: **6.8/10**
+
+**Verdict**: ❌ **NOT RECOMMENDED** - Being a "utility platform" doesn't eliminate custom development for specialized water accounting rules. SAP adds platform complexity and rigidity without reducing core development effort. Custom ABAP development required is comparable to building on Azure, but within a more constrained framework.
+
+---
+
+### 3.7 Option 7: Ledger-as-a-Service + Lightweight Azure Layer
+
+**What It Is**: Purpose-built ledger API platforms + custom calculation layer
+
+**Concept**: Separate concerns - use specialized ledger platform for what it does best (accounting), build custom layer only for unique requirements (water sharing rules)
+
+**Examples**: Fragment, Sequence, Numary (modern ledger-as-a-service APIs)
+
+**Architecture**:
+```
+┌─────────────────────────────────────────┐
+│  Ledger-as-a-Service Platform           │
+│  (Fragment / Sequence / Numary)         │
+│  ┌──────────────────────────────────┐  │
+│  │  Ledger Core (SaaS)               │  │
+│  │  - Account management             │  │
+│  │  - Transaction posting (DR/CR)    │  │
+│  │  - Balance queries (all types)    │  │
+│  │  - Audit trail (immutable)        │  │
+│  │  - Double-entry enforcement       │  │
+│  └──────────────────────────────────┘  │
+│                                          │
+│  REST API (public, well-documented)     │
+└────────────┬─────────────────────────────┘
+             │
+             │ HTTPS / JSON
+             │
+┌────────────▼─────────────────────────────┐
+│  Custom Calculation Layer (Azure)        │
+│  ┌──────────────────────────────────┐  │
+│  │  Azure Functions                  │  │
+│  │  - Water sharing rules (AA/CS/CA) │  │
+│  │  - Scheme configurations          │  │
+│  │  - Integration orchestration      │  │
+│  │  - Business logic                 │  │
+│  └──────────────────────────────────┘  │
+│  ┌──────────────────────────────────┐  │
+│  │  Azure SQL (Configuration)        │  │
+│  │  - Schemes, customers, titles     │  │
+│  │  - Water sharing rules config     │  │
+│  └──────────────────────────────────┘  │
+└──────────────────────────────────────────┘
+             │
+             │ Integration APIs
+             ▼
+    Salesforce / Gentrack / PI System
+```
+
+**Why This Approach**:
+1. ✅ **Ledger is pre-built** - don't build what specialized platforms already do excellently
+2. ✅ **Purpose-built for accounting** - ledger platforms do ONLY double-entry accounting (core competency)
+3. ✅ **Modern API-first** - designed for integration from day one
+4. ✅ **Focus custom work on unique value** - only build water-specific logic
+5. ✅ **Lower development effort** - 30-40% less code to write (ledger done)
+6. ✅ **Faster to market** - pre-built ledger accelerates delivery
+
+**Capabilities Assessment**:
+
+| Capability | Ledger-as-Service Rating | Notes |
+|------------|--------------------------|-------|
+| Double-Entry Ledger | ⭐⭐⭐⭐⭐ | This is their ONLY focus - best-in-class |
+| Calculation Engine | ⭐⭐⭐⭐ | Custom layer handles this (Azure Functions) |
+| Multi-Balance Types | ⭐⭐⭐⭐ | Ledger supports multiple balance views |
+| Integration | ⭐⭐⭐⭐ | API-first design, but 2-tier architecture |
+| Reconciliation | ⭐⭐⭐⭐⭐ | Built-in ledger reconciliation |
+| Performance | ⭐⭐⭐⭐ | Good for ledger ops, depends on vendor scale |
+| Audit Trail | ⭐⭐⭐⭐⭐ | Immutable by design |
+| Vendor Maturity | ⭐⭐⭐ | Emerging vendors, limited track record |
+
+**Division of Responsibilities**:
+- **Ledger Platform** (Fragment/Sequence/Numary):
+  - Chart of accounts (150+ accounts)
+  - Transaction posting (debits/credits)
+  - Balance calculations (Actual, Available, Pending, Forecast)
+  - Audit trail (immutable transaction history)
+  - Reconciliation support
+  
+- **Custom Layer** (Azure Functions):
+  - Water sharing rules (AA, CS, CA calculations)
+  - Scheme-specific configurations
+  - Integration with Salesforce, Gentrack, PI System
+  - Business workflow orchestration
+  - Customer-facing APIs
+
+**Cost Estimate**:
+```
+Ledger Platform:  $50k - $200k/year (SaaS pricing, transaction-based)
+                  = $250k - $1m over 5 years
+Custom Layer:     $800k - $1.2m (lighter - just calculations/integration)
+Azure Hosting:    $20k - $40k/year = $100k - $200k over 5 years
+Operations:       $0.2m - $0.4m (smaller team, ledger is managed)
+─────────────────────────────────
+TOTAL TCO:        $1.5m - $2.2m (30-40% cheaper than full Azure build)
+```
+
+**Strengths**:
+1. ✅ **Lowest TCO of viable options** - $1.5m-$2.2m vs $2.1m-$3.3m for Azure
+2. ✅ **Purpose-built ledger** - specialists do ledger better than we would
+3. ✅ **API-first, modern architecture** - designed for cloud integration
+4. ✅ **Fast development** - ledger already built, just integrate
+5. ✅ **Focus on unique value** - 60-70% of effort on water rules, not plumbing
+6. ✅ **Reduced operational burden** - ledger platform is SaaS (they manage it)
+7. ✅ **Continuous improvement** - ledger vendor improves platform for all customers
+
+**Weaknesses**:
+1. ❌ **Emerging vendors** - Fragment (founded 2021), Sequence (founded 2020) are relatively new
+2. ❌ **Vendor stability risk** - what if vendor fails, is acquired, pivots?
+3. ❌ **Enterprise scale unproven** - may not have Sunwater-scale reference customers
+4. ❌ **Two-platform architecture** - ledger platform + Azure layer adds some complexity
+5. ❌ **Vendor lock-in** - difficult to migrate ledger if needed (though API-based helps)
+6. ❌ **Limited customization** - ledger is opinionated, may not support every edge case
+7. ❌ **Dependency on vendor SLA** - can't control ledger platform availability
+
+**Risk Assessment**:
+- **Vendor Lock-in**: Medium-High (ledger migration would be painful)
+- **Skills Availability**: High (Azure Functions, REST APIs common)
+- **Delivery Risk**: Medium (vendor dependency, but faster development)
+- **Vendor Stability**: Medium-High (emerging companies, limited track record)
+- **Long-term Support**: Medium (depends on vendor success and longevity)
+
+**Mitigation Strategies**:
+1. **Vendor Due Diligence**: Deep dive on financials, customer base, roadmap
+2. **POC Required**: Validate at Sunwater scale before committing
+3. **Contractual Protections**: SLA guarantees, data export rights, source code escrow
+4. **Exit Strategy**: Design abstraction layer to enable ledger migration if needed
+
+**Weighted Score**: **7.8/10**
+
+**Verdict**: 🟡 **INTRIGUING ALTERNATIVE** - Worth serious investigation if cost is primary concern. Offers significant savings (30-40%) by not reinventing the ledger wheel. However, requires vendor due diligence and POC to validate vendor stability and enterprise scale capability.
+
+**Recommended Next Steps** (if exploring this option):
+1. Request demos from Fragment, Sequence, Numary
+2. Deep dive on vendor financials and customer references
+3. POC with Nogoa Mackenzie data (test at scale)
+4. Compare feature sets to ledger requirements
+5. Assess contractual protections and exit strategy
+
+---
+
+### 3.8 Option 8: Simple Custom Application
+
+**Concept**: Minimal infrastructure, maximum simplicity - challenge the "enterprise platform" orthodoxy
+
+**Philosophy**: Water accounting is complex **LOGIC**, not complex **SCALE**. Do we really need Azure/SAP-scale infrastructure for 26 bounded schemes?
+
+**Architecture**:
+```
+┌─────────────────────────────────────────┐
+│  Web Application                         │
+│  (Python/Django OR Node.js/Express)     │
+│  ┌──────────────────────────────────┐  │
+│  │  REST API Layer                   │  │
+│  │  - /allocations (POST, GET)       │  │
+│  │  - /transactions (POST, GET)      │  │
+│  │  - /balances (GET)                │  │
+│  │  - /reconciliation (POST)         │  │
+│  └──────────────────────────────────┘  │
+│  ┌──────────────────────────────────┐  │
+│  │  Business Logic Layer             │  │
+│  │  - AA/CS/CA calculation engines   │  │
+│  │  - Ledger posting service         │  │
+│  │  - Reconciliation service         │  │
+│  │  - Validation rules               │  │
+│  └──────────────────────────────────┘  │
+│  ┌──────────────────────────────────┐  │
+│  │  Admin Web Interface              │  │
+│  │  - Scheme configuration           │  │
+│  │  - Transaction management         │  │
+│  │  - Reporting dashboards           │  │
+│  └──────────────────────────────────┘  │
+└────────────┬─────────────────────────────┘
+             │
+┌────────────▼─────────────────────────────┐
+│  PostgreSQL Database                     │
+│  (Open-source, enterprise-grade)         │
+│  ┌──────────────────────────────────┐  │
+│  │  Ledger Schema                    │  │
+│  │  - Account table (150+ accounts)  │  │
+│  │  - LedgerEntry (immutable)        │  │
+│  │  - SubLedger (customers, schemes) │  │
+│  └──────────────────────────────────┘  │
+│  ┌──────────────────────────────────┐  │
+│  │  Temporal Tables (Audit Trail)    │  │
+│  │  - System-versioned tables        │  │
+│  │  - Complete history tracking      │  │
+│  └──────────────────────────────────┘  │
+│  ┌──────────────────────────────────┐  │
+│  │  Stored Procedures                │  │
+│  │  - Balance calculations           │  │
+│  │  - Reconciliation logic           │  │
+│  └──────────────────────────────────┘  │
+└──────────────────────────────────────────┘
+
+Deployed on: 
+- Single VM for dev/test
+- Small cluster (3-5 nodes) for production
+- OR managed PostgreSQL + container service
+```
+
+**Why This Approach**:
+1. ✅ **Dramatically lower cost** - minimal infrastructure, no expensive platforms
+2. ✅ **Fast to build** - no platform learning curve, straight to business logic
+3. ✅ **Simple = reliable** - fewer moving parts, easier to debug
+4. ✅ **PostgreSQL = free** - no database licensing costs
+5. ✅ **Scope is bounded** - 26 schemes will never become 1000 schemes
+6. ✅ **Appropriate to scale** - don't over-engineer for scale you'll never need
+
+**Reality Check - Would This Actually Work?**
+
+**Scale Analysis**:
+| Requirement | Need | Simple App Capability | Verdict |
+|-------------|------|----------------------|---------|
+| Schemes | 26 (fixed) | Thousands possible | ✅ Massive overkill |
+| Customers | ~1,000-5,000 per scheme | Millions possible | ✅ More than enough |
+| Transactions | 10,000/day peak | 100,000+/day | ✅ Exceeds need |
+| Concurrent Users | 100+ staff | 1,000+ possible | ✅ 10× headroom |
+| Storage | ~10 GB/year | Terabytes possible | ✅ No issue |
+| Calculations | Monthly/quarterly batch | Real-time capable | ✅ Over-provisioned |
+
+**Verdict on Scale**: ✅ This workload DOES NOT require cloud-scale infrastructure. A well-architected simple application on modern hardware easily exceeds requirements.
+
+**Capabilities Assessment**:
+
+| Capability | Simple App Rating | Notes |
+|------------|------------------|-------|
+| Double-Entry Ledger | ⭐⭐⭐⭐⭐ | PostgreSQL perfect for ledgers, our schema design |
+| Calculation Engine | ⭐⭐⭐⭐⭐ | Python/Node excellent for complex logic |
+| Multi-Balance Types | ⭐⭐⭐⭐⭐ | Full control of data model |
+| Integration | ⭐⭐⭐⭐ | REST APIs work from anywhere |
+| Reconciliation | ⭐⭐⭐⭐⭐ | SQL perfect for reconciliation |
+| Performance | ⭐⭐⭐⭐ | More than adequate for workload |
+| Auto-Scaling | ⭐⭐ | Manual scaling (but rarely needed) |
+| Audit Trail | ⭐⭐⭐⭐⭐ | PostgreSQL temporal tables excellent |
+| Cost | ⭐⭐⭐⭐⭐ | Dramatically lowest |
+
+**Technology Stack** (example):
+```
+Language: Python 3.11+ with Django/FastAPI
+        OR Node.js with Express/NestJS
+Database: PostgreSQL 15+ (open-source)
+Hosting:  3-5 node cluster OR managed container service
+Web UI:   React/Vue for admin interface
+APIs:     RESTful JSON APIs
+Testing:  pytest/jest, automated CI/CD
+Monitoring: Prometheus + Grafana (open-source)
+```
+
+**Cost Estimate**:
+```
+Development:      $500k - $1m (faster - no platform overhead)
+                  - No Azure/SAP learning curve
+                  - No platform constraints
+                  - Direct business logic focus
+PostgreSQL:       $0 (open-source, no licensing)
+VM Hosting:       $200-500/month = $12k-30k/year 
+                  = $60k-150k/5-year
+OR Managed:       $400/month = $24k/year = $120k/5-year
+Operations:       $0.2m - $0.4m (smaller team, simpler stack)
+─────────────────────────────────
+TOTAL TCO:        $0.75m - $1.5m (60-70% cheaper than Azure!)
+```
+
+**Strengths**:
+1. ✅ **Lowest cost by far** - 60-70% savings vs Azure ($0.75m-$1.5m vs $2.1m-$3.3m)
+2. ✅ **Fastest to build** - no platform complexity, straight to requirements
+3. ✅ **Simple = maintainable** - future teams can understand it easily
+4. ✅ **Appropriate to scale** - right-sized, not over-engineered
+5. ✅ **Full control** - no platform limits, no vendor lock-in
+6. ✅ **Open-source stack** - PostgreSQL, Python/Node free forever
+7. ✅ **Direct business logic** - no abstraction layers, no framework fighting
+8. ✅ **Easy debugging** - simple stack, straightforward troubleshooting
+
+**Weaknesses**:
+1. ❌ **Perceived risk** - "not enterprise-grade" stigma
+2. ❌ **Organizational culture** - may prefer recognized platforms (Azure, SAP)
+3. ❌ **Manual scaling** - requires capacity planning vs auto-scaling
+4. ❌ **Infrastructure management** - need to manage VMs/containers (unless managed service)
+5. ❌ **Limited vendor support** - no SAP/Microsoft to call
+6. ❌ **Skills perception** - Python/PostgreSQL may seem "too simple"
+7. ❌ **Future unknown** - what if requirements change dramatically?
+
+**Critical Question**: Is "enterprise problem" = "enterprise platform"?
+
+**Counterargument to "Not Enterprise-Grade"**:
+- PostgreSQL powers: Apple, Instagram, Reddit, Spotify, Uber - is that enterprise enough?
+- Python/Django powers: Instagram (400M+ users), Spotify, YouTube - scale proven?
+- Simple ≠ Weak. Simple = Focused, Maintainable, Reliable.
+- Netflix's philosophy: "Microservices, simple components, avoid complexity"
+
+**Risk Assessment**:
+- **Vendor Lock-in**: None (open-source stack)
+- **Skills Availability**: Very High (Python/Node/PostgreSQL ubiquitous)
+- **Delivery Risk**: Low (simple stack, clear requirements)
+- **Scalability Risk**: Low (over-provisioned for actual need)
+- **Organizational Risk**: Medium-High (cultural preference for "enterprise")
+
+**Weighted Score**: **7.5/10** (third highest!)
+
+**Verdict**: ⚠️ **RADICAL BUT COMPELLING** - Challenges orthodoxy that "enterprise problem requires enterprise platform". Water accounting is complex LOGIC (which simple stack handles excellently) not complex SCALE (which simple stack over-delivers on). Could save $1.5m-$2m while delivering faster and simpler.
+
+**Requires**: Organizational confidence to choose simplicity over complexity, and willingness to challenge "enterprise platform" assumptions.
+
+**Best Suited For**: Organizations that value:
+- Pragmatism over prestige
+- Cost efficiency over vendor relationships
+- Simplicity over complexity
+- Results over perception
+
+---
+
 ## 4. Comparative Analysis
 
 ### 4.1 Capabilities Scorecard
 
-| Capability | Azure | Salesforce | AWS | Hybrid |
-|------------|-------|------------|-----|--------|
-| Double-Entry Ledger | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| Calculation Engine | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| Multi-Balance Types | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| Integration | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
-| Performance | ⭐⭐⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| Customer Portal | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| **TOTAL SCORE** | **28/30** | **22/30** | **28/30** | **29/30** |
+| Capability | Azure | Azure+Serverless | Salesforce | AWS | Hybrid | SAP IS-U | Ledger-aaS | Simple App |
+|------------|-------|------------------|------------|-----|--------|----------|------------|------------|
+| Double-Entry Ledger | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
+| Calculation Engine | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
+| Multi-Balance Types | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
+| Integration | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
+| Performance | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
+| Cost Efficiency | ⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐ | ⭐ | ⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
+| Agility/Flexibility | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
+| **TOTAL SCORE** | **32/35** | **34/35** | **19/35** | **32/35** | **27/35** | **28/35** | **30/35** | **33/35** |
 
 ### 4.2 Cost Comparison (5-Year TCO)
 
-| Platform | Low Estimate | High Estimate | Average |
-|----------|--------------|---------------|---------|
-| **Azure** | **$2.3m** | **$3.6m** | **$2.95m** |
-| **Salesforce** | $2.3m | $4.3m | $3.3m |
-| **AWS** | $2.3m | $3.6m | $2.95m |
-| **Hybrid** | $3.3m | $5.8m | $4.55m |
+| Platform | Low Estimate | High Estimate | Average | Cost Ranking |
+|----------|--------------|---------------|---------|--------------|
+| **Simple Custom App** | **$0.75m** | **$1.5m** | **$1.1m** | 🥇 Lowest |
+| **Ledger-as-a-Service** | $1.5m | $2.2m | $1.85m | 🥈 Very Low |
+| **Azure + Serverless** | $2.1m | $3.3m | $2.7m | Good |
+| **Azure (Traditional)** | $2.3m | $3.6m | $2.95m | Moderate |
+| **Salesforce** | $2.3m | $4.3m | $3.3m | High |
+| **AWS** | $2.3m | $3.6m | $2.95m | Moderate |
+| **SAP IS-U** | $2.5m | $4m | $3.25m | High |
+| **Hybrid** | $3.3m | $5.8m | $4.55m | 🥉 Highest |
 
-**Key Insight**: Azure and AWS are cost-competitive; Salesforce may be similar or higher; Hybrid is most expensive.
+**Cost Insights**: 
+- Simple Custom App saves 60-70% vs Azure
+- Ledger-as-a-Service saves 30-40% vs Azure
+- Azure + Serverless saves 10-15% vs traditional Azure
+- Salesforce and SAP IS-U are comparable or higher than Azure
+- Hybrid is most expensive option
 
 ### 4.3 Risk Comparison
 
-| Risk Factor | Azure | Salesforce | AWS | Hybrid |
-|-------------|-------|------------|-----|--------|
-| Vendor Lock-in | Medium | High | Medium | Medium |
-| Skills Availability | High | High | Low | High |
-| Delivery Risk | Medium | Medium-High | Medium-High | High |
-| Technical Debt | Low | High | Low | Medium |
-| Operational Complexity | Medium | Low | Medium | High |
-| Performance Risk | Low | High | Low | Low |
+| Risk Factor | Azure | Azure+SL | Salesforce | AWS | Hybrid | SAP IS-U | Ledger-aaS | Simple |
+|-------------|-------|----------|------------|-----|--------|----------|------------|--------|
+| Vendor Lock-in | Medium | Medium | High | Medium | Medium | High | Med-High | None |
+| Skills Availability | High | High | High | Low | High | Low | High | Very High |
+| Delivery Risk | Medium | Medium | Med-High | Med-High | High | Med-High | Medium | Low |
+| Technical Debt | Low | Low | High | Low | Medium | Medium | Low | Low |
+| Operational Complexity | Medium | Medium | Low | Medium | High | High | Medium | Low |
+| Performance Risk | Low | Low | High | Low | Low | Low | Low | Low |
+| Vendor Stability | Low | Low | Low | Low | Low | Low | Med-High | N/A |
+| **OVERALL RISK** | **Medium** | **Medium** | **Med-High** | **Med-High** | **High** | **Med-High** | **Medium** | **Low** |
+
+**Note**: Azure+SL = Azure + Serverless; Ledger-aaS = Ledger-as-a-Service; Simple = Simple Custom App
 | **OVERALL RISK** | **Medium** | **Medium-High** | **Medium-High** | **High** |
 
 ### 4.4 Decision Matrix (Weighted Scoring)
 
-| Criterion | Weight | Azure Score | SF Score | AWS Score | Hybrid Score |
-|-----------|--------|-------------|----------|-----------|--------------|
-| Functional Fit | 30% | 9.3/10 (2.79) | 7.3/10 (2.19) | 9.3/10 (2.79) | 9.7/10 (2.91) |
-| TCO (5-year) | 25% | 8.5/10 (2.13) | 7.0/10 (1.75) | 8.5/10 (2.13) | 5.0/10 (1.25) |
-| Risk | 20% | 7.5/10 (1.50) | 6.0/10 (1.20) | 6.0/10 (1.20) | 5.0/10 (1.00) |
-| Time to Value | 15% | 7.0/10 (1.05) | 8.0/10 (1.20) | 6.0/10 (0.90) | 6.0/10 (0.90) |
-| Strategic Alignment | 10% | 8.0/10 (0.80) | 9.0/10 (0.90) | 6.0/10 (0.60) | 7.0/10 (0.70) |
-| **TOTAL SCORE** | **100%** | **8.27/10** | **7.24/10** | **7.62/10** | **6.76/10** |
+| Platform | Functional Fit (30%) | TCO (25%) | Risk (20%) | Time to Value (15%) | Strategic (10%) | **TOTAL** |
+|----------|---------------------|-----------|------------|-------------------|----------------|-----------|
+| **Azure + Serverless** | 9.7/10 (2.91) | 8.0/10 (2.00) | 7.5/10 (1.50) | 7.5/10 (1.13) | 8.0/10 (0.80) | **8.34/10** 🥇 |
+| **Azure (Traditional)** | 9.3/10 (2.79) | 7.5/10 (1.88) | 7.5/10 (1.50) | 7.0/10 (1.05) | 8.0/10 (0.80) | **8.02/10** |
+| **Simple Custom App** | 9.4/10 (2.82) | 9.5/10 (2.38) | 8.5/10 (1.70) | 8.5/10 (1.28) | 5.0/10 (0.50) | **8.68/10** 🥈 |
+| **Ledger-as-a-Service** | 8.6/10 (2.58) | 9.0/10 (2.25) | 6.5/10 (1.30) | 8.0/10 (1.20) | 7.0/10 (0.70) | **8.03/10** 🥉 |
+| **AWS** | 9.3/10 (2.79) | 7.5/10 (1.88) | 6.0/10 (1.20) | 6.0/10 (0.90) | 6.0/10 (0.60) | **7.37/10** |
+| **Salesforce** | 6.3/10 (1.89) | 6.5/10 (1.63) | 5.5/10 (1.10) | 7.0/10 (1.05) | 8.0/10 (0.80) | **6.47/10** |
+| **SAP IS-U** | 8.0/10 (2.40) | 6.0/10 (1.50) | 6.0/10 (1.20) | 4.0/10 (0.60) | 7.0/10 (0.70) | **6.40/10** |
+| **Hybrid (SF+Azure)** | 8.3/10 (2.49) | 4.5/10 (1.13) | 5.0/10 (1.00) | 5.0/10 (0.75) | 6.0/10 (0.60) | **5.97/10** |
 
-**Ranking**:
-1. 🥇 **Azure**: 8.27/10
-2. 🥈 **AWS**: 7.62/10
-3. 🥉 **Salesforce**: 7.24/10
-4. **Hybrid**: 6.76/10
+**Rankings**:
+1. 🥇 **Simple Custom App**: 8.68/10 - Highest score (if cultural fit)
+2. 🥈 **Azure + Serverless**: 8.34/10 - Best balanced option
+3. 🥉 **Ledger-as-a-Service**: 8.03/10 - Best cost efficiency with acceptable risk
+4. **Azure Traditional**: 8.02/10 - Solid all-rounder
+5. **AWS**: 7.37/10 - Viable but no advantage
+6. **Salesforce**: 6.47/10 - Constrained by platform limits
+7. **SAP IS-U**: 6.40/10 - Complexity without custom dev reduction
+8. **Hybrid**: 5.97/10 - Over-engineered
+
+**Note**: Simple Custom App scores highest overall but lower on "Strategic Alignment" due to potential organizational preference for recognized platforms.
 
 ---
 
