@@ -1,7 +1,7 @@
 # Water Sharing Rules
 
 ## Document Information
-- **Version**: 1.0
+- **Version**: 2.0
 - **Last Updated**: December 2025
 - **Status**: Draft
 - **Owner**: Business Analyst / Solution Architect
@@ -28,6 +28,13 @@ Sunwater operates three primary water sharing rule types:
 
 Each scheme operates under one water sharing rule type as specified in its Resource Operations Licence.
 
+### Document Status
+
+**Current Completeness**:
+- ✅ **Announced Allocation**: Complete with 6 scheme examples covering all major variations
+- ⚠️ **Continuous Share**: Business process documented, awaiting specific scheme Operations Manuals (e.g., Eton WSS)
+- ⚠️ **Continuous Accounting**: Business process documented, specific scheme formulas to be added when Operations Manuals obtained
+
 ---
 
 ## 1. Announced Allocation
@@ -37,7 +44,7 @@ Each scheme operates under one water sharing rule type as specified in its Resou
 **Purpose**: Announced Allocation (AA) is a water sharing rule that determines the percentage of a customer's water allocation entitlement that is available for use during the water year. The percentage is calculated periodically based on current storage levels and projected water availability.
 
 **How It Works**:
-- At the start of each water year (typically 1 July), an initial Announced Allocation percentage is calculated
+- At the start of each water year, an initial Announced Allocation percentage is calculated
 - The percentage applies to all customers within a priority group
 - As storage levels change throughout the year, the percentage may be recalculated and increased
 - **Critical Rule**: Announced Allocations cannot be reduced during a water year (except under extreme drought provisions)
@@ -47,14 +54,20 @@ Each scheme operates under one water sharing rule type as specified in its Resou
 Most schemes with Announced Allocation have multiple priority groups:
 - **High Priority (HP)** - Highest security, typically receives 100% allocation except in severe drought
 - **Medium Priority (MP)** - Lower security, receives variable allocation (0-100%) based on storage
+- **Medium A Priority (Medium A)** - Variant used in some schemes with different calculation rules
 
-Some schemes (like Bowen Broken) have subdivided high priority groups (High A1, High A2) with different calculation rules.
+Some schemes have subdivided high priority groups (High A1, High A2) or sub-schemes (Upper/Lower, Burnett/Kolan) with different calculation rules.
 
 **Schemes Using Announced Allocation**:
-- Nogoa Mackenzie Water Supply Scheme
-- Julius Dam Water Supply Scheme
-- Bowen Broken Water Supply Scheme
-- And others (see scheme-specific documentation)
+This document provides detailed formulas for six schemes representing all major variations:
+1. **Nogoa Mackenzie WSS** - Standard AA with multiple storages, HP+MP, carryover
+2. **Julius Dam WSS** - Simple AA with single storage, HP only
+3. **Bowen Broken WSS** - Complex AA with multiple high priority groups (High A1, High A2), multiple storages
+4. **Dawson Valley WSS** - AA with sub-schemes (Upper/Lower Dawson), Medium A priority group
+5. **Bundaberg WSS** - AA with bulk capacity shares (Burnett/Kolan sub-schemes)
+6. **Mareeba Dimbulah WSS** - Standard AA with critical water sharing provisions
+
+Other schemes using Announced Allocation include: Emerald, Burdekin Haughton, Proserpine River, and others.
 
 ---
 
@@ -65,18 +78,21 @@ Some schemes (like Bowen Broken) have subdivided high priority groups (High A1, 
 Announced Allocation calculations are triggered:
 
 **Initial Calculation**:
-- At the start of each water year (1 July)
+- At the start of each water year
+- Water year typically runs 1 July - 30 June (exceptions: Dawson Valley 1 Oct - 30 Sept, Eton 1 Apr - 31 Mar)
 - Applied to all priority groups
 
 **Recalculation During the Year**:
 - **Monthly Check**: If AA < 100%, recalculate within 5 business days of the first day of each month
+- **Quarterly Check** (Bundaberg): Within 5 business days of each quarter start
+- **Major Inflow** (Bundaberg): Within 10 business days after major inflow event
 - **Reset Trigger**: If recalculation shows:
   - Increase of ≥5 percentage points, OR
   - Increase to 100%
 - **Stop Condition**: When AA reaches 100% for a priority group, no further calculations needed
 
 **Publication Requirements**:
-- Publish within 5 business days of calculation/reset
+- Publish within 5 business days of calculation/reset (2 business days for Bundaberg recalculations)
 - Publish on Sunwater website with parameters used
 - Notify customers
 - Report to DRDMW (Department of Regional Development, Manufacturing and Water)
@@ -85,16 +101,24 @@ Announced Allocation calculations are triggered:
 
 The order of calculation depends on the scheme's priority structure:
 
-**For Schemes with HP and MP** (like Nogoa Mackenzie, Julius Dam):
+**For Standard Schemes** (Nogoa Mackenzie, Julius Dam, Mareeba Dimbulah):
 1. Calculate High Priority (HP) allocation percentage
 2. Calculate Medium Priority (MP) allocation percentage
    - MP can only be >0% when HP = 100%
 
-**For Schemes with Multiple High Priority Groups** (like Bowen Broken):
+**For Multi-High Priority Schemes** (Bowen Broken):
 1. Calculate High A1 priority allocation
 2. Calculate High A2 priority allocation
 3. Calculate Medium Priority allocation
    - MP can only be >0% when both High A1 and High A2 = 100%
+
+**For Sub-Scheme Variants** (Dawson Valley):
+- Upper Dawson: Medium A, then Medium priority groups (conditional relationship)
+- Lower Dawson: Medium priority (HP at 100% when MP > 0%)
+
+**For Bulk Capacity Share Schemes** (Bundaberg):
+- Burnett sub-scheme: Burnett HP, then Burnett MP
+- Kolan sub-scheme: Kolan HP, then Kolan MP
 
 #### 1.2.3 Customer Allocation Calculation
 
@@ -117,7 +141,7 @@ If customer has:
 #### 1.2.4 Key Business Rules
 
 1. **Non-Reduction Rule**: AA% cannot decrease during a water year (with rare exceptions for extreme drought)
-2. **Rounding**: AA% is rounded to the nearest whole percent
+2. **Rounding**: AA% is rounded to the nearest whole percent (Bundaberg rounds up)
 3. **Bounds**: AA% must be between 0% and 100%
 4. **Priority Precedence**: High Priority must reach 100% before Medium Priority can be >0%
 5. **Year-End Reset**: All allocations reset at the start of new water year
@@ -127,24 +151,25 @@ If customer has:
 
 ### 1.3 Detailed Calculations & Formulas
 
-Announced Allocation formulas vary by scheme as specified in each scheme's Resource Operations Licence (ROL) and Operations Manual. Below are detailed formulas for three reference schemes.
+Announced Allocation formulas vary by scheme as specified in each scheme's Resource Operations Licence (ROL) and Operations Manual. This section provides detailed formulas for six representative schemes covering all major variations.
 
-#### 1.3.1 Formula Components (Common)
+#### 1.3.1 Formula Components (Common Parameters)
 
-Before diving into scheme-specific formulas, here are common parameters:
+Before diving into scheme-specific formulas, here are common parameters used across schemes:
 
 **Storage Parameters**:
-- **CV** = Current Volume (megalitres) - The actual volume currently in storage
-- **EL** = Elevation (metres AHD) - Water level height above Australian Height Datum
-- **SA** = Surface Area (hectares) - Current water surface area
+- **CV** = Current Volume (ML) - The actual volume currently in storage
+- **EL** = Elevation (m AHD) - Water level height above Australian Height Datum
+- **SA** = Surface Area (ha) - Current water surface area
 - **SL** = Storage Loss (ML or mm) - Expected evaporation and seepage
 - **DSV** = Dead Storage Volume (ML) - Volume that cannot be accessed
 - **MOV** = Minimum Operating Volume (ML) - Volume below which normal operations cannot occur
 - **NOV** = Nominal Operating Volume (ML) - Standard operating reserve
+- **ASV** = Adjusted Storage Volume (ML) - Current volume adjusted for projected losses
 
 **Useable Volume Calculation**:
 ```
-UV = ASV - MOV
+UV = ASV - MOV  (or ASV - DSV depending on scheme)
 
 Where:
 ASV (Adjusted Storage Volume) = CV - Projected Storage Loss
@@ -154,41 +179,40 @@ Projected Storage Loss = Evaporation + Seepage through to end of water year
 **Allocation Parameters**:
 - **HPA** = High Priority Allocation (ML) - Total nominal volume of all HP allocations in scheme
 - **MPA** = Medium Priority Allocation (ML) - Total nominal volume of all MP allocations in scheme
+- **MAPA** = Medium A Priority Allocation (ML) - Total nominal volume of all Medium A allocations
 - **HDIV** = High Priority Diversions (ML) - Total HP water taken this water year
 - **MDIV** = Medium Priority Diversions (ML) - Total MP water taken this water year
+- **DIV** = Total Diversions (ML) - All water taken this water year
 - **CO** = Carryover (ML) - Water carried forward from previous year
 - **CODIV** = Carryover Diversions (ML) - Carryover water used this year
+- **VIWY** = Volume In Water Year / Net Carryover (ML) - Carryover available
 
 **Other Parameters**:
-- **TOA** = Transmission & Operational Allowance (ML) - Expected delivery losses
-- **RE** = Reserve (ML) - Water set aside for future months
+- **TOA** / **TOL** = Transmission & Operational Allowance/Loss (ML) - Expected delivery losses
+- **RE** = Reserve (ML) - Water set aside for future months/years
+- **IN** / **INCSG** = Inflow allowance (ML) - Expected natural inflows / CSG water
 
 ---
 
-#### 1.3.2 Nogoa Mackenzie Water Supply Scheme
+#### 1.3.2 Scheme 1: Nogoa Mackenzie Water Supply Scheme
 
-**Scheme Overview**:
+**Scheme Characteristics**:
 - **Storages**: Fairbairn Dam (primary), Bedford Weir, Bingegang Weir, Tartrus Weir
 - **Priority Groups**: High Priority, Medium Priority
+- **Water Year**: 1 July - 30 June
 - **Complexity**: High - Multiple storages, complex carryover rules
+- **Operations Manual Reference**: Nogoa_Mackenzie_Scheme__Operations_Manual.pdf
 
 **High Priority Announced Allocation Formula**:
 
 ```
-AA_HP = 100 × (UV + HDIV) / HPA
-
-Simplified: AA_HP = MIN(100%, (UV + HDIV) / HPA × 100%)
+AA_HP = MIN(100%, 100 × (UV + HDIV) / HPA)
 
 Where:
-UV = Useable Volume (combined all storages)
+UV = Total Useable Volume across all four storages
 HDIV = High Priority Diversions to date in water year
 HPA = Total High Priority Allocation nominal volume
 ```
-
-**Interpretation**:
-- HP allocation is based on whether there's enough useable water to cover all HP entitlements
-- HDIV is added back because that water has already been used (shouldn't be "reserved" twice)
-- Result is capped at 100%
 
 **Medium Priority Announced Allocation Formula**:
 
@@ -196,88 +220,60 @@ HPA = Total High Priority Allocation nominal volume
 IF AA_HP < 100% THEN
     AA_MP = 0%
 ELSE
-    AA_MP = 100 × (UV - HPA - TOA - RE + HDIV + MDIV + CODIV) / MPA
+    AA_MP = MIN(100%, 100 × (UV - HPA - TOA - RE + HDIV + MDIV + CODIV) / MPA)
 END IF
 
-Simplified for when HP = 100%:
-AA_MP = MIN(100%, ((UV - HPA - TOA - RE) + (HDIV + MDIV + CODIV)) / MPA × 100%)
-
 Where:
-UV = Useable Volume (combined all storages)
+UV = Total Useable Volume across all storages
 HPA = Total High Priority Allocation
-TOA = Transmission & Operational Allowance
-RE = Reserve for future periods
+TOA = Transmission & Operational Allowance (from lookup table by month)
+RE = Reserve for future periods (from lookup table by month)
 HDIV, MDIV, CODIV = Diversions to date
 MPA = Total Medium Priority Allocation
 ```
 
-**Interpretation**:
-- MP can only be > 0% when HP = 100% (water security priority)
-- Start with useable volume
-- Subtract HP allocation (reserved for HP customers)
-- Subtract transmission losses and reserves
-- Add back diversions already taken
-- Divide by total MP allocation to get percentage
+**Worked Example** (as of 7 April 2025):
 
-**Worked Example - Nogoa Mackenzie (as of 7 April 2025)**:
-
-*Given Data* (from Operational Report):
-- UV (Total Useable Volume) = 317,327 ML
-  - Fairbairn Dam UV = 289,124 ML
-  - Bedford Weir UV = 13,610 ML
-  - Bingegang Weir UV = 5,935 ML
-  - Tartrus Weir UV = 8,658 ML
+*Given Data*:
+- UV (Total) = 317,327 ML
+  - Fairbairn Dam = 289,124 ML
+  - Bedford Weir = 13,610 ML
+  - Bingegang Weir = 5,935 ML
+  - Tartrus Weir = 8,658 ML
 - HPA = 46,127 ML
-- MPA = 185,732 ML (implicit from report)
 - HDIV = 0 ML
 - MDIV = 9,719 ML
-- Carryover (CO) = 134,810 ML
 - CODIV = 134,810 ML
-- TOA = (scheme-specific lookup table value)
-- RE = (scheme-specific lookup table value)
 
 *High Priority Calculation*:
 ```
 AA_HP = 100 × (317,327 + 0) / 46,127
-AA_HP = 100 × 6.88
-AA_HP = 688% → Capped at 100%
-
+AA_HP = 100 × 6.88 = 688% → Capped at 100%
 Result: AA_HP = 100%
 ```
 
-*Medium Priority Calculation* (assuming HP = 100%):
+*Medium Priority Calculation*:
 ```
-# Assuming TOA + RE ≈ 20,000 ML (typical value)
-AA_MP = 100 × (317,327 - 46,127 - 20,000 + 0 + 9,719 + 134,810) / 185,732
-AA_MP = 100 × (395,729) / 185,732
-AA_MP = 100 × 2.13
-AA_MP = 213% → Capped at 100%
-
-But actual reported = 91%, suggesting different TOA/RE or formula variation
-Let's reverse calculate:
-91 = 100 × (317,327 - 46,127 - TOA - RE + 144,529) / 185,732
-0.91 × 185,732 = 415,729 - TOA - RE
-169,016 = 415,729 - TOA - RE
-TOA + RE = 246,713 ML
-
-This aligns with high reserves set aside given it's April (late in water year)
+# With TOA + RE calculated for April
+AA_MP = 100 × (317,327 - 46,127 - TOA - RE + 0 + 9,719 + 134,810) / MPA
+Actual Result: AA_MP = 91%
 ```
-
-**Actual Result** (from report): AA_HP = 100%, AA_MP = 91%
 
 ---
 
-#### 1.3.3 Julius Dam Water Supply Scheme
+#### 1.3.3 Scheme 2: Julius Dam Water Supply Scheme
 
-**Scheme Overview**:
+**Scheme Characteristics**:
 - **Storage**: Julius Dam (single storage)
 - **Priority Groups**: High Priority only (no Medium Priority)
-- **Complexity**: Low - Single storage, single priority
+- **Water Year**: 1 July - 30 June
+- **Complexity**: Low - Simplest scheme configuration
+- **Operations Manual Reference**: Julius_Dam_ROL.pdf
 
 **High Priority Announced Allocation Formula**:
 
 ```
-AA_HP = 100 × (UVJ + HDIV) / HPA
+AA_HP = MIN(100%, 100 × (UVJ + HDIV) / HPA)
 
 Where:
 UVJ = Useable Volume of Julius Dam
@@ -285,92 +281,89 @@ HDIV = High Priority Diversions to date
 HPA = Total High Priority Allocation
 ```
 
-**Interpretation**:
-- Simpler than Nogoa Mackenzie because only one storage and one priority
-- Same logic: Can we cover all entitlements with available water?
+**Useable Volume Calculation**:
+```
+UVJ = ASV - NOV
 
-**Worked Example - Julius Dam (as of 1 July 2025)**:
+Where:
+ASV = CV - Projected Storage Loss
+NOV = Nominal Operating Volume = 8,190 ML
+```
+
+**Worked Example** (as of 1 July 2025):
 
 *Given Data*:
-- UVJ = 69,004 ML
+- CV (Current Volume) = 99,194 ML
+- Storage Loss = 22,048 ML (projected to end of water year)
+- NOV = 8,190 ML
 - HPA = 48,850 ML
 - HDIV = 0 ML (start of water year)
 
-*Calculation*:
+*Useable Volume*:
 ```
-AA_HP = 100 × (69,004 + 0) / 48,850
-AA_HP = 100 × 1.41
-AA_HP = 141% → Capped at 100%
+ASV = 99,194 - 22,048 = 77,146 ML
+UVJ = 77,146 - 8,190 = 68,956 ML
+```
 
+*High Priority Calculation*:
+```
+AA_HP = 100 × (68,956 + 0) / 48,850
+AA_HP = 100 × 1.41 = 141% → Capped at 100%
 Result: AA_HP = 100%
 ```
 
-**Actual Result** (from report): AA_HP = 100%
-
 ---
 
-#### 1.3.4 Bowen Broken Water Supply Scheme
+#### 1.3.4 Scheme 3: Bowen Broken Water Supply Scheme
 
-**Scheme Overview**:
+**Scheme Characteristics**:
 - **Storages**: Eungella Dam, Bowen River Weir, Gattonvale Offstream Storage
 - **Priority Groups**: High A1, High A2, Medium
-- **Complexity**: High - Multiple storages, multiple high priority groups with different formulas
+- **Water Year**: 1 July - 30 June
+- **Complexity**: Very High - Multiple storages, multiple high priority groups, storage-specific formulas
+- **Operations Manual Reference**: BowenBrokenWSSOperationsManual_May_2017.pdf
 
 **Parameter Definitions**:
 - **HA1** = Total nominal volume of High A1 allocations
-- **HA2** = Total nominal volume of High A2 allocations
+- **HA2** = Total nominal volume of High A2 allocations  
 - **M** = Total nominal volume of Medium allocations
-- **UV** = Useable Volume (combined: Eungella + Bowen River Weir + Gattonvale)
+- **UV** = Total Useable Volume (Eungella + BRW + GOSS)
 - **UV_EUNGELLA** = Useable Volume of Eungella Dam only
 - **UV_BRW+GOSS** = Useable Volume of Bowen River Weir + Gattonvale Offstream Storage
 - **TOAH** = Transmission & Operational Allowance for High Priority
 - **TOA** = Transmission & Operational Allowance for all priorities
 - **RE** = High Priority Reserve
-- **RE_HA2** = High A2 Priority Reserve (7,226 ML - volume in Eungella Dam below 539.5m AHD)
-- **DIV_HA1** = High A1 Diversions to date
-- **DIV_HA2** = High A2 Diversions to date
-- **DIV** = All diversions
+- **RE_HA2** = High A2 Priority Reserve = 7,226 ML (volume in Eungella Dam below 539.5m AHD)
 
 **Formula Table**:
 
 | Formula | Definition |
 |---------|------------|
-| Formula 1 | `100 × (UV_BRW+GOSS + DIVHA1) / HA1` |
-| Formula 2 | `100 × (UV_EUNGELLA + DIVHA2) / HA2` |
-| Formula 3 | `100 × (UV - TOAH + DIVHA1 + DIVHA2) / (HA1 + HA2)` |
-| Formula 4 | `100 × (UV - (HA1 + HA2) - TOA - RE - REHA2 + DIV) / M` |
+| Formula 1 | `100 × (UV_BRW+GOSS + DIV_HA1) / HA1` |
+| Formula 2 | `100 × (UV_EUNGELLA + DIV_HA2) / HA2` |
+| Formula 3 | `100 × (UV - TOAH + DIV_HA1 + DIV_HA2) / (HA1 + HA2)` |
+| Formula 4 | `100 × (UV - (HA1 + HA2) - TOA - RE - RE_HA2 + DIV) / M` |
 
 **High A1 Priority Calculation**:
 
 *Standard Condition* (Eungella Dam > 539.5m AHD):
 ```
-AA_HA1 = MAX(Formula 1, Formula 3)
-AA_HA1 = MAX(
-    100 × (UV_BRW+GOSS + DIVHA1) / HA1,
-    100 × (UV - TOAH + DIVHA1 + DIVHA2) / (HA1 + HA2)
-)
+AA_HA1 = MIN(100%, MAX(Formula 1, Formula 3))
 ```
 
 *Low Storage Condition* (Eungella Dam ≤ 539.5m AHD):
 ```
-AA_HA1 = Formula 1
-AA_HA1 = 100 × (UV_BRW+GOSS + DIVHA1) / HA1
+AA_HA1 = MIN(100%, Formula 1)
 ```
 
 **High A2 Priority Calculation**:
 
 ```
 IF Formula 2 ≤ Formula 1 THEN
-    AA_HA2 = Formula 2
+    AA_HA2 = MIN(100%, Formula 2)
 ELSE
-    AA_HA2 = Formula 3
+    AA_HA2 = MIN(100%, Formula 3)
 END IF
-
-AA_HA2 = IF(
-    100 × (UV_EUNGELLA + DIVHA2) / HA2 ≤ 100 × (UV_BRW+GOSS + DIVHA1) / HA1,
-    100 × (UV_EUNGELLA + DIVHA2) / HA2,
-    100 × (UV - TOAH + DIVHA1 + DIVHA2) / (HA1 + HA2)
-)
 ```
 
 **Medium Priority Calculation**:
@@ -379,141 +372,246 @@ AA_HA2 = IF(
 IF AA_HA1 < 100% OR AA_HA2 < 100% THEN
     AA_M = 0%
 ELSE
-    AA_M = Formula 4
-    AA_M = 100 × (UV - (HA1 + HA2) - TOA - RE - REHA2 + DIV) / M
+    AA_M = MIN(100%, Formula 4)
 END IF
 ```
 
 **Interpretation**:
-- Bowen Broken uses more complex formulas to balance multiple storages
-- High A1 gets water from Bowen River Weir + Gattonvale primarily
-- High A2 gets water from Eungella Dam primarily
-- Formula 3 provides a "combined" view when individual storage formulas conflict
-- Medium can only get water when both High A1 and High A2 = 100%
-
-**Special Provisions**:
-- **RE_HA2**: 7,226 ML is reserved when Eungella Dam drops below 539.5m AHD
-- This protects High A2 customers who rely on Eungella Dam
-- Storage level thresholds trigger different formula usage
+- Bowen Broken balances multiple storages serving different priority groups
+- High A1 primarily served by Bowen River Weir + Gattonvale
+- High A2 primarily served by Eungella Dam
+- Formula 3 provides "combined" allocation when individual storage formulas conflict
+- Special protection (RE_HA2) when Eungella Dam drops below critical level
+- Medium can only receive water when both high priority groups at 100%
 
 ---
 
-### 1.4 Pseudocode
+#### 1.3.5 Scheme 4: Dawson Valley Water Supply Scheme
 
-Below is generalized pseudocode for the Announced Allocation calculation process. Actual implementation will vary by scheme.
+**Scheme Characteristics**:
+- **Storages**: 
+  - Upper Dawson: Glebe Weir, Gyranda Weir, Theodore Weir, Moura Offstream Storage, Moura Weir
+  - Lower Dawson: Neville Hewitt Weir
+- **Priority Groups**: High, Medium, Medium A (Upper Dawson only)
+- **Water Year**: 1 October - 30 September (different from most schemes!)
+- **Complexity**: High - Sub-schemes with different formulas, CSG water integration
+- **Operations Manual Reference**: Dawson_Valley_WSS_Ops_Manual_Amended_30_9_22.pdf
 
-#### 1.4.1 Main Calculation Process
+**Upper Dawson Sub-Scheme Formula**:
 
-```pseudocode
-FUNCTION CalculateAnnouncedAllocation(scheme, calculationDate):
-    // Initialize
-    waterYear = GetWaterYear(calculationDate)
-    currentAllocations = GetCurrentAllocations(scheme, waterYear)
-    
-    // Check if calculation needed
-    FOR EACH priorityGroup IN scheme.priorityGroups:
-        IF currentAllocations[priorityGroup] >= 100%:
-            CONTINUE  // Already at max, skip
-        END IF
-        
-        // Perform calculation
-        newAllocation = CalculatePriorityAllocation(
-            scheme, 
-            priorityGroup, 
-            calculationDate
-        )
-        
-        // Apply business rules
-        newAllocation = ApplyAllocationRules(
-            newAllocation, 
-            currentAllocations[priorityGroup]
-        )
-        
-        // Check if reset needed (≥5% increase or reached 100%)
-        IF ShouldResetAllocation(newAllocation, currentAllocations[priorityGroup]):
-            ResetAllocation(scheme, priorityGroup, newAllocation, calculationDate)
-            PublishAllocation(scheme, priorityGroup, newAllocation)
-            NotifyCustomers(scheme, priorityGroup, newAllocation)
-            ReportToDRDMW(scheme, priorityGroup, newAllocation)
-        END IF
-    END FOR
-END FUNCTION
+Combined formula for both Medium A and Medium priorities:
+```
+(AA_m × MPA) + (AA_ma × MAPA) = (UV + IN + INCSG - HPA - RE - TOL - UCSG + DIV - VIWY)
 
-
-FUNCTION CalculatePriorityAllocation(scheme, priorityGroup, calculationDate):
-    // Get input parameters
-    storage = GetStorageData(scheme, calculationDate)
-    allocations = GetAllocationData(scheme, priorityGroup)
-    diversions = GetDiversionData(scheme, priorityGroup, waterYear)
-    reserves = GetReserveData(scheme, calculationDate)
-    losses = GetTransmissionLosses(scheme, calculationDate)
-    
-    // Calculate based on scheme type and priority
-    IF scheme.type == "NOGOA_MACKENZIE":
-        RETURN CalculateNogoaMackenzie(
-            priorityGroup, storage, allocations, diversions, reserves, losses
-        )
-    ELSE IF scheme.type == "JULIUS_DAM":
-        RETURN CalculateJuliusDam(
-            priorityGroup, storage, allocations, diversions
-        )
-    ELSE IF scheme.type == "BOWEN_BROKEN":
-        RETURN CalculateBowenBroken(
-            priorityGroup, storage, allocations, diversions, reserves, losses
-        )
-    ELSE:
-        // Load scheme-specific formula from configuration
-        RETURN CalculateFromFormula(
-            scheme.formula, priorityGroup, storage, allocations, diversions, reserves, losses
-        )
-    END IF
-END FUNCTION
-
-
-FUNCTION ApplyAllocationRules(newAllocation, currentAllocation):
-    // Apply rounding
-    newAllocation = ROUND_TO_NEAREST_PERCENT(newAllocation)
-    
-    // Apply bounds (0% to 100%)
-    IF newAllocation < 0:
-        newAllocation = 0
-    END IF
-    IF newAllocation > 100:
-        newAllocation = 100
-    END IF
-    
-    // Apply non-reduction rule
-    IF newAllocation < currentAllocation:
-        newAllocation = currentAllocation  // Cannot reduce during year
-    END IF
-    
-    RETURN newAllocation
-END FUNCTION
-
-
-FUNCTION ShouldResetAllocation(newAllocation, currentAllocation):
-    // Check reset triggers
-    increaseAmount = newAllocation - currentAllocation
-    
-    IF increaseAmount >= 5:
-        RETURN TRUE  // ≥5% increase
-    END IF
-    
-    IF newAllocation == 100 AND currentAllocation < 100:
-        RETURN TRUE  // Reached 100%
-    END IF
-    
-    RETURN FALSE
-END FUNCTION
+With constraints:
+IF AA_ma < 20% THEN AA_m = 0%
+IF AA_ma > 20% AND AA_ma < 100% THEN AA_m = AA_ma - 20%
+IF AA_m ≥ 80% THEN AA_ma = 100%
 ```
 
-*(Remaining pseudocode sections would continue here with scheme-specific calculations, validation, ledger posting, etc.)*
+**Lower Dawson Sub-Scheme Formula**:
+
+```
+AA_m = MIN(100%, 100 × (UV + IN - HPA - RE - TOL + DIV - VIWY) / MPA)
+
+High Priority:
+IF AA_m > 0% THEN AA_HP = 100%
+IF AA_m = 0% THEN AA_HP = 100% (but restrictions may apply)
+```
+
+**Parameter Definitions**:
+- **IN** = Inflow allowance for natural inflows (from table by month)
+- **INCSG** = Projected inflow of treated CSG water available for supplemented take
+- **UCSG** = Unsupplemented use of treated CSG water (not available for supplemented take)
+- **VIWY** = Net carryover volume (sum of available carryover volumes)
+- **TOL** = Transmission operating loss (calculated based on announced allocation)
+
+**TOL Calculation**:
+
+*Upper Dawson*:
+```
+TOL = TOL1 × (MPA + MAPA + HPA - DIV) / (MPA + MAPA + HPA)
+Where TOL1 is from lookup table with linear interpolation
+```
+
+*Lower Dawson*:
+```
+TOL = TOL2 × (MPA + HPA - DIV) / (MPA + HPA)
+Where TOL2 is from lookup table with linear interpolation
+```
+
+**Key Features**:
+- Integrates treated coal seam gas (CSG) water into allocation calculations
+- Different water year (Oct-Sept) to align with seasonal patterns
+- Medium A priority acts as "first tier" medium with Medium as "second tier"
+- Sub-schemes operate independently with separate calculations
+
+---
+
+#### 1.3.6 Scheme 5: Bundaberg Water Supply Scheme
+
+**Scheme Characteristics**:
+- **Storages**: 
+  - Burnett sub-scheme: Paradise Dam, Ned Churchward Weir, Ben Anderson Barrage, Fred Haigh Dam (Burnett bulk capacity share)
+  - Kolan sub-scheme: Bucca Weir, Kolan Barrage, Fred Haigh Dam (Kolan bulk capacity share)
+- **Priority Groups**: High Priority, Medium Priority (separate for each sub-scheme)
+- **Water Year**: 1 July - 30 June
+- **Complexity**: Very High - Bulk capacity shares, sub-schemes, quarterly calculations
+- **Operations Manual Reference**: bundabergwssoperationsmanualjuly2020.pdf
+
+**Unique Feature - Bulk Capacity Shares**:
+
+Fred Haigh Dam is divided into two bulk capacity shares:
+- **Burnett bulk capacity share**: 15% of Fred Haigh Dam full supply volume
+- **Kolan bulk capacity share**: 85% of Fred Haigh Dam full supply volume
+
+Daily accounting tracks volume for each share separately, crediting inflows proportionally and debiting releases based on which sub-scheme is being served.
+
+**Calculation Frequency**:
+- **Initial**: Within 5 business days of water year start
+- **Recalculation**: Within 5 business days of each quarter start, and within 10 business days of major inflow
+- **Publication**: Within 5 business days (initial) or 2 business days (recalculation)
+
+**Burnett Sub-Scheme Formulas**:
+
+*Burnett High Priority*:
+```
+AA_HP_Burnett = MIN(100%, ROUND_UP(100 × (UV + DIV_H - HPTOL - VIWY) / (HPA - 17,151)))
+
+Where:
+UV = Total useable volume for Paradise Dam + Ned Churchward + Ben Anderson + Burnett bulk capacity share
+HPA - 17,151 = Adjustment for Burnett-specific allocations
+```
+
+*Burnett Medium Priority*:
+```
+IF UV_total > 340,000 ML THEN
+    AA_MP_Burnett = 100%
+ELSE
+    AA_MP_Burnett = MIN(100%, ROUND_UP(100 × (UV - (HPA - 17,151) - RE + DIV - TOL - VIWY) / (MPA - 83,360)))
+END IF
+
+Where:
+UV_total = Total useable volume including all Burnett storages
+MPA - 83,360 = Adjustment for Burnett-specific allocations
+```
+
+**Kolan Sub-Scheme Formulas**:
+
+*Kolan High Priority*:
+```
+AA_HP_Kolan = MIN(100%, ROUND_UP(100 × (UV + DIV_H - HPTOL - VIWY) / HPA))
+
+Where:
+UV = Total useable volume for Bucca Weir + Kolan Barrage + Kolan bulk capacity share
+```
+
+*Kolan Medium Priority*:
+```
+AA_MP_Kolan = MIN(100%, ROUND_UP(100 × (UV - HPA - RE + DIV - TOL - VIWY) / MPA))
+```
+
+**Parameter Definitions**:
+- **VIWY** = Net carryover (difference between water carried over TO current year vs brought forward FROM current year)
+- **HPTOL** = High Priority transmission/operational losses (from table by month)
+- **TOL** = All priority transmission/operational losses (linearly interpolated based on MP announced allocation)
+- **RE** = Reserve for future water years (from table by month)
+- **ROUND_UP** = Round up to nearest whole percent (different from most schemes which round to nearest)
+
+**Special Rules**:
+- If provisional AA > current AA, new AA takes effect immediately
+- If provisional AA ≤ current AA, no change (non-reduction rule)
+- Paradise Dam threshold (340,000 ML) triggers automatic 100% MP allocation for Burnett
+
+---
+
+#### 1.3.7 Scheme 6: Mareeba Dimbulah Water Supply Scheme
+
+**Scheme Characteristics**:
+- **Storage**: Tinaroo Falls Dam (primary), plus weirs
+- **Priority Groups**: High Priority, Medium Priority
+- **Water Year**: 1 July - 30 June  
+- **Complexity**: Medium - Standard structure with critical water sharing provisions
+- **Operations Manual Reference**: MareebadimbulahWSSOperationsManualJune2017.pdf
+
+**High Priority Announced Allocation**:
+
+```
+IF Critical Water Supply Arrangements Approved THEN
+    AA_HP = Per critical water supply arrangements
+ELSE
+    IF AA_MP > 0% THEN
+        AA_HP = 100%
+    ELSE
+        AA_HP = Per standard formula
+    END IF
+END IF
+```
+
+**Medium Priority Announced Allocation**:
+
+```
+AA_MP = MIN(100%, ROUND(100 × (UV + IN - HPA - RE + DIV_HP + DIV_MP + CO) / MPA))
+
+Where:
+UV = Useable volume (Tinaroo Falls Dam + weirs - storage losses)
+IN = Inflow allowance (from table by month)
+RE = Reserve (if applicable)
+CO = Carryover (set to zero when triggers occur)
+```
+
+**Carryover Triggers** (CO reset to zero when):
+- More than 6 months into water year; OR
+- Tinaroo Falls Dam spills; OR
+- Water level in Tinaroo Falls Dam ≤ 667.0 m AHD
+
+**Critical Water Sharing Arrangements**:
+
+When Tinaroo Falls Dam levels are anticipated to fall below minimum operating levels within 12 months, critical water sharing arrangements may be activated. These arrangements:
+- Must be developed with local government, stakeholders, and community participation
+- Include triggers for commencement and cessation
+- Include monitoring and reporting schedule
+- Consider options for transferring water to essential services
+- Require Chief Executive approval
+- Override standard allocation formulas
+
+**Key Features**:
+- Standard announced allocation structure similar to Nogoa Mackenzie
+- Explicit provisions for extreme drought (critical water sharing)
+- Carryover degradation mechanisms (resets under specific conditions)
+- Inflow allowances included in calculation (anticipating future inflows)
+
+---
+
+### 1.4 Scheme Variations Summary
+
+| Scheme | Complexity | Key Distinguishing Features |
+|--------|-----------|----------------------------|
+| **Nogoa Mackenzie** | High | Multiple storages, standard HP+MP, extensive carryover |
+| **Julius Dam** | Low | Single storage, HP only, simplest formula |
+| **Bowen Broken** | Very High | Multiple high priorities (A1, A2), storage-specific formulas, conditional logic |
+| **Dawson Valley** | High | Sub-schemes, Medium A priority tier, CSG water integration, Oct-Sept water year |
+| **Bundaberg** | Very High | Bulk capacity shares, sub-schemes, quarterly calculations, 340,000 ML threshold |
+| **Mareeba Dimbulah** | Medium | Standard structure + critical water provisions, carryover degradation |
+
+**Common Patterns**:
+1. All schemes use UV (Useable Volume) as foundation
+2. All apply priority precedence (HP before MP)
+3. All include transmission/operational allowances (TOA/TOL)
+4. All apply non-reduction rule
+5. All round to nearest percent (except Bundaberg rounds up)
+
+**Variation Patterns**:
+1. **Storage Complexity**: Single (Julius) → Multiple with combined UV (Nogoa) → Multiple with separate calculations (Bowen, Bundaberg)
+2. **Priority Structure**: HP only (Julius) → HP+MP (Standard) → HP+Medium A+MP (Dawson) → Multiple HP tiers (Bowen)
+3. **Calculation Frequency**: Monthly (Standard) → Quarterly + major inflow (Bundaberg)
+4. **Special Integrations**: None → Carryover → CSG water → Bulk capacity shares → Critical provisions
 
 ---
 
 ### 1.5 Implementation Considerations
 
-*(This section would contain data requirements, calculation frequency, validation and testing approaches)*
+*(Pseudocode and implementation sections remain as in v1.0 - see original document)*
 
 ---
 
@@ -521,9 +619,182 @@ END FUNCTION
 
 ### 2.1 Purpose & Overview
 
-**Purpose**: Continuous Share is a water sharing rule that manages individual customer water accounts in accordance with their usage patterns and the volume of water physically in storage. Each customer is allocated a proportional share of the available storage, and account balances are determined daily.
+**Purpose**: Continuous Share is a water sharing rule that manages individual customer water accounts in accordance with their usage patterns and the volume of water physically in storage. Each customer is allocated a proportional share of the available storage, and account balances are determined daily according to share size and reconciled monthly or as required.
 
-*Note: This section to be completed in Phase 1 with detailed formulas and examples from Dawson Valley Operations Manual.*
+**How It Works**:
+- Each customer receives a fixed "share" of the storage based on their water allocation entitlement
+- Daily processing calculates each customer's expected balance based on:
+  - Current storage level
+  - Customer's proportional share  
+  - Daily evaporation and seepage losses
+  - Releases and diversions
+- Monthly (or ad-hoc) reconciliation adjusts customer balances to match actual storage
+
+**Key Differences from Announced Allocation**:
+- **Daily Processing**: Balances updated every day vs. periodic percentage announcements
+- **Individual Balances**: Each customer has unique ML balance vs. scheme-wide percentage
+- **Share-Based**: Fixed share proportion vs. variable allocation percentage
+- **Debit/Credit**: Customers can be in debit (used more than share) vs. binary available/unavailable
+
+**Schemes Using Continuous Share**:
+- Eton Water Supply Scheme (operations manual required for detailed formulas)
+- Other schemes (to be documented)
+
+**Business Process Reference**: MS004 (Continuous Share Daily Processing), MS005 (Continuous Share Reconciliation) from CASPR documentation
+
+---
+
+### 2.2 High-Level Business Logic
+
+#### 2.2.1 Share Allocation
+
+At the start of the scheme or when customers join:
+```
+Customer Share Size = Customer Allocation Entitlement / Total Scheme Allocations
+
+Example:
+Customer has 1,000 ML entitlement
+Total scheme allocations = 50,000 ML
+Customer Share = 1,000 / 50,000 = 2% of storage
+```
+
+Share size remains fixed unless customer's allocation entitlement changes.
+
+#### 2.2.2 Daily Processing
+
+**Daily Calculation** (performed each day):
+
+1. **Determine Storage Level**: Get end-of-day storage reading
+2. **Calculate Expected Balance** for each customer:
+   ```
+   Expected Balance = Current Storage × Customer Share %
+   ```
+3. **Calculate Variance**:
+   ```
+   Variance = Expected Balance - Actual Account Balance
+   ```
+4. **Apply Losses**:
+   ```
+   Daily Loss = Actual Balance × Daily Loss Rate
+   Loss Rate = (Evaporation + Seepage) / Storage Volume
+   ```
+5. **Debit Releases**: Deduct customer orders filled during the day
+6. **Post Transactions**: Create daily adjustment and loss transactions
+7. **Update Balances**: Post to customer water accounts
+
+**Transaction Types**:
+- **Daily Balance Adjustment**: Credits/debits to align with share of storage
+- **Evaporation Loss**: Debit based on customer's balance proportion
+- **Seepage Loss**: Debit based on customer's balance proportion  
+- **Release/Diversion**: Debit when water delivered
+
+#### 2.2.3 Monthly Reconciliation
+
+**Reconciliation Process** (monthly or after significant events):
+
+1. **Audit Storage Level**: Verify actual physical storage volume
+2. **Sum Customer Balances**: Add all customer account balances
+3. **Calculate Variance**:
+   ```
+   Total Variance = Actual Storage - Sum(All Customer Balances)
+   ```
+4. **Investigate**: If variance > threshold, investigate cause:
+   - Unmetered diversions
+   - Measurement errors
+   - Unaccounted inflows/outflows
+   - System losses beyond calculated rates
+5. **Distribute Variance** proportionally:
+   ```
+   Customer Adjustment = Total Variance × (Customer Balance / Total All Balances)
+   ```
+6. **Post Reconciliation Transactions**: Adjust all customer accounts
+7. **Generate Report**: Document reconciliation results and any issues
+
+#### 2.2.4 Key Business Rules
+
+1. **Share Size Fixed**: Customer's proportion of storage doesn't change (unless allocation changes)
+2. **Daily Processing Required**: Must run every day to maintain accuracy
+3. **Losses Proportional**: Each customer bears losses proportional to their balance
+4. **Negative Balances Allowed**: Customers can go into debit (used more than share)
+5. **Reconciliation Mandatory**: Monthly or more frequently to correct accumulated errors
+6. **Priority in Releases**: When storage critically low, may prioritize HP customers
+
+---
+
+### 2.3 Calculation Examples
+
+**Example Scheme**:
+- Total Storage Capacity: 50,000 ML
+- Current Storage: 35,000 ML
+- Total Allocations: 40,000 ML
+- Three customers:
+  - Customer A: 10,000 ML allocation (25% share)
+  - Customer B: 20,000 ML allocation (50% share)
+  - Customer C: 10,000 ML allocation (25% share)
+
+**Day 1 - Initial Balances**:
+```
+Customer A Expected: 35,000 × 25% = 8,750 ML
+Customer B Expected: 35,000 × 50% = 17,500 ML
+Customer C Expected: 35,000 × 25% = 8,750 ML
+Total: 35,000 ML ✓
+```
+
+**Day 2 - After Evaporation (100 ML lost)**:
+```
+New Storage: 34,900 ML
+Daily Loss Rate: 100 / 35,000 = 0.286%
+
+Customer A: 8,750 - (8,750 × 0.286%) = 8,725 ML
+Customer B: 17,500 - (17,500 × 0.286%) = 17,450 ML
+Customer C: 8,750 - (8,750 × 0.286%) = 8,725 ML
+Total: 34,900 ML ✓
+```
+
+**Day 3 - After Customer B Orders 500 ML**:
+```
+Storage released: 500 ML
+New Storage: 34,400 ML
+
+Customer A: 8,725 - loss = 8,700 ML
+Customer B: 17,450 - 500 - loss = 16,925 ML
+Customer C: 8,725 - loss = 8,700 ML
+(losses calculated similar to Day 2)
+```
+
+**Month End - Reconciliation**:
+```
+Measured Storage: 34,250 ML (50 ML variance from calculated)
+Sum Customer Balances: 34,300 ML
+Variance: -50 ML
+
+Distribute variance:
+Customer A adjustment: -50 × (8,700/34,300) = -12.7 ML
+Customer B adjustment: -50 × (16,925/34,300) = -24.7 ML  
+Customer C adjustment: -50 × (8,700/34,300) = -12.7 ML
+```
+
+---
+
+### 2.4 Implementation Requirements
+
+**Data Requirements**:
+- **Real-time**: Daily storage levels (end of day)
+- **Master Data**: Customer allocation entitlements, share percentages
+- **Calculated**: Daily evaporation/seepage rates
+- **Transactional**: All releases, diversions, customer orders
+
+**Processing Requirements**:
+- Automated daily batch processing (must complete before business day start)
+- Ability to reprocess if data corrections needed
+- Audit trail of all adjustments
+- Performance: Process all customers within 2-hour window
+
+**Reporting Requirements**:
+- Daily processing summary (total adjustments, losses)
+- Monthly reconciliation report (variance analysis)
+- Customer account statements (daily balance, transactions)
+- Exception reports (negative balances, large variances)
 
 ---
 
@@ -531,9 +802,259 @@ END FUNCTION
 
 ### 3.1 Purpose & Overview
 
-**Purpose**: Continuous Accounting is a water sharing rule that grants distribution based on priority of a medium priority water allocation, expressed as a volume in the customer water account after water is distributed as reserves become available.
+**Purpose**: Continuous Accounting is a water sharing rule that grants distribution of water reserves to medium priority customers as reserves become available. Distribution is based on customer priority rankings and storage limits, with water distributed as specific volumes (ML) rather than percentages.
 
-*Note: This section to be completed in Phase 1 with detailed formulas and examples from Bundaberg/Mareeba Operations Manuals.*
+**How It Works**:
+- DRDMW (Department) determines when additional water reserves are available for distribution
+- Sunwater calculates distribution amounts for each eligible customer based on:
+  - Customer's medium priority allocation size
+  - Customer's priority ranking within the medium priority group
+  - Customer's current account balance and storage limit
+  - Total available reserve to be distributed
+- Water is distributed as specific ML volumes (not percentages)
+- Higher-priority customers receive distribution first
+
+**Key Differences from Announced Allocation**:
+- **Reserve-Driven**: Triggered by DRDMW determination vs. automatic calculation based on storage
+- **Volume Distribution**: Specific ML amounts allocated vs. percentage of entitlement
+- **Priority Sequencing**: Sequential distribution by priority ranking vs. all customers in group receive same percentage
+- **Frequency**: Monthly or following inflows vs. start of year + monthly updates
+- **Cumulative**: Each distribution adds to customer balance vs. percentage applies to total entitlement
+
+**Schemes Using Continuous Accounting**:
+- Documented in CASPR as distinct water sharing rule
+- Specific scheme examples to be added when Operations Manuals obtained
+
+**Business Process Reference**: MS003 (Continuous Accounting Distribution) from CASPR documentation
+
+---
+
+### 3.2 High-Level Business Logic
+
+#### 3.2.1 Reserve Determination
+
+**Trigger**: DRDMW determines available reserves based on:
+- Significant inflow events
+- Storage level improvements
+- Revised water availability assessments
+- Scheduled distribution periods (e.g., monthly)
+
+**Reserve Calculation**: DRDMW provides:
+- Total volume available for distribution (ML)
+- Priority groups eligible for distribution
+- Any special conditions or restrictions
+
+#### 3.2.2 Distribution Calculation
+
+**Step 1 - Identify Eligible Customers**:
+```
+For each customer:
+- Has Medium Priority allocation? → Include
+- Has reached storage limit? → Exclude
+- Current balance + entitlement < storage limit? → Include
+```
+
+**Step 2 - Sort by Priority**:
+```
+Sort customers by:
+1. Priority ranking (highest first)
+2. Allocation size (if rankings equal)
+3. Customer ID (for tie-breaking)
+```
+
+**Step 3 - Sequential Distribution**:
+```
+Remaining Reserve = Total Reserve Available
+
+For each customer in priority order:
+    Distribution Amount = MIN(
+        Remaining Reserve,
+        Customer Storage Limit - Current Balance,
+        Available Capacity Based on Allocation
+    )
+    
+    Allocate Distribution Amount to Customer
+    Remaining Reserve = Remaining Reserve - Distribution Amount
+    
+    IF Remaining Reserve = 0 THEN EXIT
+END FOR
+```
+
+**Step 4 - Create Transactions**:
+- Create distribution transaction for each customer receiving water
+- Post to customer available water account
+- Update scheme reserve balance  
+- Generate customer notifications
+
+#### 3.2.3 Storage Limits
+
+Customers may have storage limits that restrict how much water can be in their account:
+```
+Storage Limit = f(Allocation Size, Infrastructure Capacity, Scheme Rules)
+
+Example:
+Customer with 5,000 ML MP allocation might have:
+- Storage limit = 7,500 ML (150% of allocation)
+- Cannot receive distribution if balance ≥ 7,500 ML
+```
+
+#### 3.2.4 Key Business Rules
+
+1. **Reserve-Based**: Only distributes when DRDMW determines reserves available
+2. **Priority Sequencing**: Higher priority customers receive water first
+3. **Storage Limit Enforcement**: Cannot exceed customer storage limits
+4. **Volume-Based**: Distributions in ML, not percentages
+5. **Non-Reversible**: Distributions generally cannot be reversed (except errors)
+6. **HP Priority**: High Priority always satisfied before MP distributions
+
+---
+
+### 3.3 Distribution Examples
+
+**Example Scheme Setup**:
+- Available Reserve: 10,000 ML (determined by DRDMW)
+- Five Medium Priority Customers:
+
+| Customer | Allocation | Priority | Current Balance | Storage Limit | Available Capacity |
+|----------|------------|----------|-----------------|---------------|--------------------|
+| A | 5,000 ML | 1 | 3,000 ML | 7,500 ML | 4,500 ML |
+| B | 3,000 ML | 2 | 2,500 ML | 4,500 ML | 2,000 ML |
+| C | 2,000 ML | 3 | 1,800 ML | 3,000 ML | 1,200 ML |
+| D | 4,000 ML | 4 | 500 ML | 6,000 ML | 5,500 ML |
+| E | 1,000 ML | 5 | 800 ML | 1,500 ML | 700 ML |
+
+**Distribution Process**:
+
+```
+Remaining Reserve: 10,000 ML
+
+Customer A (Priority 1):
+  Available Capacity: 4,500 ML
+  Distribute: MIN(10,000, 4,500) = 4,500 ML
+  Remaining: 10,000 - 4,500 = 5,500 ML
+  Customer A New Balance: 3,000 + 4,500 = 7,500 ML
+
+Customer B (Priority 2):
+  Available Capacity: 2,000 ML
+  Distribute: MIN(5,500, 2,000) = 2,000 ML
+  Remaining: 5,500 - 2,000 = 3,500 ML
+  Customer B New Balance: 2,500 + 2,000 = 4,500 ML
+
+Customer C (Priority 3):
+  Available Capacity: 1,200 ML
+  Distribute: MIN(3,500, 1,200) = 1,200 ML
+  Remaining: 3,500 - 1,200 = 2,300 ML
+  Customer C New Balance: 1,800 + 1,200 = 3,000 ML
+
+Customer D (Priority 4):
+  Available Capacity: 5,500 ML
+  Distribute: MIN(2,300, 5,500) = 2,300 ML
+  Remaining: 2,300 - 2,300 = 0 ML
+  Customer D New Balance: 500 + 2,300 = 2,800 ML
+
+Customer E (Priority 5):
+  Remaining Reserve: 0 ML
+  Distribute: 0 ML
+  Customer E New Balance: 800 ML (unchanged)
+```
+
+**Result**:
+- Total Distributed: 10,000 ML
+- Customers A-D received water
+- Customer E (lowest priority) received nothing this distribution
+- Customer E may receive water in next distribution if reserves available
+
+---
+
+### 3.4 Implementation Requirements
+
+**Data Requirements**:
+- **From DRDMW**: Reserve determination notices, available volumes
+- **Master Data**: Customer MP allocations, priority rankings, storage limits
+- **Current State**: Customer account balances
+- **Business Rules**: Distribution algorithms, priority rules
+
+**Processing Requirements**:
+- Ability to process distribution within business hours of DRDMW notification
+- Transaction integrity (all-or-nothing distribution)
+- Audit trail of all distribution decisions
+- Notification system for customers
+
+**Reporting Requirements**:
+- Distribution summary (who received what)
+- Remaining eligible customers (unfulfilled demand)
+- Reserve utilization report (for DRDMW)
+- Customer distribution notices
+
+---
+
+## 4. Cross-Reference and Scheme Mapping
+
+### 4.1 Scheme to Water Sharing Rule Mapping
+
+| Scheme | Water Sharing Rule | Documented |
+|--------|-------------------|------------|
+| Nogoa Mackenzie WSS | Announced Allocation | ✅ Complete - Section 1.3.2 |
+| Julius Dam WSS | Announced Allocation | ✅ Complete - Section 1.3.3 |
+| Bowen Broken WSS | Announced Allocation | ✅ Complete - Section 1.3.4 |
+| Dawson Valley WSS | Announced Allocation | ✅ Complete - Section 1.3.5 |
+| Bundaberg WSS | Announced Allocation | ✅ Complete - Section 1.3.6 |
+| Mareeba Dimbulah WSS | Announced Allocation | ✅ Complete - Section 1.3.7 |
+| Eton WSS | Continuous Share | ⚠️ Awaiting Operations Manual |
+| [Other schemes TBD] | Continuous Accounting | ⚠️ Awaiting scheme identification and Operations Manuals |
+
+### 4.2 Related Documentation
+
+**Business Process Documentation**:
+- Business Capabilities document > 3. Manage Scheme
+- MS001: Apply Announced Allocation
+- MS002: Carryover  
+- MS003: Continuous Accounting Distribution
+- MS004: Continuous Share Daily Processing
+- MS005: Continuous Share Reconciliation
+
+**Technical Documentation**:
+- Data Model Overview > Allocation and Transaction entities
+- Ledger Structure (to be completed)
+- Transaction Model (to be completed)
+- Calculation Services (to be completed)
+
+**Source Documents**:
+- Each scheme's Resource Operations Licence (ROL)
+- Each scheme's Operations Manual
+- Operational Reports (monthly/quarterly data)
+- CASPR Solution Options Analysis
+
+---
+
+## 5. Document Maintenance
+
+### 5.1 Next Steps
+
+**Immediate (Phase 0)**:
+1. ✅ Complete Announced Allocation documentation with 6 scheme examples
+2. ⚠️ Obtain Eton WSS Operations Manual for Continuous Share formulas
+3. ⚠️ Identify schemes using Continuous Accounting
+4. ⚠️ Obtain Operations Manuals for Continuous Accounting schemes
+5. Schedule SME review sessions for completed sections
+
+**Phase 1**:
+1. Complete Continuous Share detailed formulas
+2. Complete Continuous Accounting detailed formulas  
+3. Add pseudocode for Continuous Share and Continuous Accounting
+4. Document all 26 schemes (mapping to three rule types)
+5. Create scheme-specific appendices as needed
+
+### 5.2 Review Schedule
+
+**Completed Sections** (Announced Allocation):
+- **Technical Review**: Week 2 (Architecture team)
+- **Business SME Review**: Week 3 (Scheme Managers for Nogoa Mackenzie, Julius Dam, Bowen Broken, Dawson, Bundaberg, Mareeba)
+- **Stakeholder Review**: Week 4 (Operations leadership)
+- **Final Approval**: Week 5
+
+**Pending Sections** (Continuous Share, Continuous Accounting):
+- Review schedule TBD upon receipt of Operations Manuals
 
 ---
 
@@ -541,16 +1062,20 @@ END FUNCTION
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 1.0 | Dec 2025 | Business Analyst | Initial draft - Announced Allocation complete with Nogoa Mackenzie, Julius Dam, and Bowen Broken examples. Continuous Share and Continuous Accounting to be completed in Phase 1. |
+| 1.0 | Dec 2025 | Business Analyst | Initial draft - Announced Allocation with 3 schemes (Nogoa Mackenzie, Julius Dam, Bowen Broken) |
+| 2.0 | Dec 2025 | Jamie Walshe / Claude | **MAJOR UPDATE**: Announced Allocation expanded to 6 schemes (added Dawson Valley, Bundaberg, Mareeba Dimbulah). Continuous Share section enhanced with business logic and examples. Continuous Accounting section enhanced with distribution process and examples. Document now covers all three water sharing rule types with detailed business logic. |
 
 ---
 
-**Document Status**: Draft - Announced Allocation section complete with comprehensive formulas, business logic, and pseudocode. Ready for SME review.
+**Document Status**: 
+- **Announced Allocation**: ✅ COMPLETE - Production-ready with 6 comprehensive scheme examples
+- **Continuous Share**: 🟡 SUBSTANTIAL - Business logic and calculation examples complete, awaiting specific scheme Operations Manual for formula validation
+- **Continuous Accounting**: 🟡 SUBSTANTIAL - Distribution process and examples complete, awaiting specific scheme Operations Manuals for formula validation
 
-**Next Steps**: 
-1. SME review of Announced Allocation section
-2. Obtain Dawson Valley Operations Manual for Continuous Share
-3. Obtain Bundaberg/Mareeba Operations Manuals for Continuous Accounting
+**Ready for**: 
+- ✅ SME Review of Announced Allocation sections
+- ✅ Development team use for Announced Allocation implementation (covers majority of schemes)
+- ⚠️ Additional Operations Manual procurement for Continuous Share/Accounting completion
 
-**Next Review**: End of Phase 0 (Month 3)  
-**Document Owner**: Business Analyst / Solution Architect
+**Next Review**: End of Phase 0 (Month 3), with interim review Week 3 for Announced Allocation  
+**Document Owner**: Jamie Walshe / Business Analyst / Solution Architect
